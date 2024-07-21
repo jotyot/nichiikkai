@@ -1,4 +1,6 @@
+require('dotenv').config()
 const wanikaniAPIkey = process.env.WANIKANI_API_KEY
+
 const getWanikaniVocab = async (word) => {
     const response = await fetch(`https://api.wanikani.com/v2/subjects?types=vocabulary&slugs=${word}`, {
         headers: {
