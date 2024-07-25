@@ -66,10 +66,12 @@ public class NIKService
             UserId = user.Id,
             User = user,
             Word = word,
-            Level = 1
         };
 
-        user.UserWords.Add(userWord);
+        _context.Database.ExecuteSqlInterpolated($@"
+            INSERT INTO UserWords (UserId, Word, Level, NextReviewDay, UserSynonyms)
+            VALUES ({userWord.UserId}, {userWord.Word}, {userWord.Level}, {userWord.NextReviewDay}, {userWord.UserSynonyms})");
+
         await _context.SaveChangesAsync();
     }
 }

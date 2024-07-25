@@ -15,8 +15,8 @@ public class UserWord
     public required string UserId { get; set; }
     public required NIKUser User { get; set; }
     public required string Word { get; set; }
-    public int Level { get; set; }
-    public DateOnly NextReviewDay { get; set; }
+    public int Level { get; set; } = 1;
+    public DateOnly NextReviewDay { get; set; } = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
     public List<string> UserSynonyms { get; set; } = new List<string>();
 }
 
