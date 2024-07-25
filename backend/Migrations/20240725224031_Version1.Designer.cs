@@ -12,8 +12,8 @@ using NIKAPI.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(NIKDbContext))]
-    [Migration("20240724224731_WordTableMigrate")]
-    partial class WordTableMigrate
+    [Migration("20240725224031_Version1")]
+    partial class Version1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -262,7 +262,7 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserWords");
+                    b.ToTable("UserWord");
                 });
 
             modelBuilder.Entity("NIKAPI.Data.NIKUser", b =>

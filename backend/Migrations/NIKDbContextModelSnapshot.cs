@@ -259,7 +259,7 @@ namespace backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserWords");
+                    b.ToTable("UserWord");
                 });
 
             modelBuilder.Entity("NIKAPI.Data.NIKUser", b =>

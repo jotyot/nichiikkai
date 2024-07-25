@@ -46,4 +46,53 @@ public class NIKController : ControllerBase
         return Ok();
     }
 
+    [HttpGet("{userName}/words/{word}")]
+    public async Task<ActionResult> GetUserWord([FromRoute] string userName, [FromRoute] string word)
+    {
+        try
+        {
+            var userWord = await _service.GetUserWord(userName, word);
+            return Ok(userWord);
+        }
+        catch (Exception e)
+        {
+            return NotFound(e.Message);
+        }
+
+    }
+
+    [HttpPut("{userName}/words/{word}")]
+    public async Task<ActionResult> UpdateUserWordLevel([FromRoute] string userName, [FromRoute] string word, [FromBody] UpdateUserWordLevelModel model)
+    {
+        try
+        {
+            await _service.UpdateUserWordLevel(userName, word, model.Level, model.NextReviewDay);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    [HttpPut("{userName}/words/{word}/synonyms")]
+    public async Task<ActionResult> UpdateUserSynonyms([FromRoute] string userName, [FromRoute] string word, [FromBody] List<string> userSynonyms)
+    {
+        try
+        {
+            await _service.UpdateUserSynonyms(userName, word, userSynonyms);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+}
+
+public class UpdateUserWordLevelModel
+{
+    public int Level { get; set; }
+    public DateOnly NextReviewDay { get; set; }
 }
