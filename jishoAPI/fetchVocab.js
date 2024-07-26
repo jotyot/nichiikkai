@@ -84,5 +84,5 @@ const createVocabInfo = async (word) => {
 }
 
 module.exports = {
-    createVocabInfo
-}
+  createVocabInfo,
+};
