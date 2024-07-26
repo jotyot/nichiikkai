@@ -61,12 +61,12 @@ public class NIKController : ControllerBase
 
     }
 
-    [HttpPut("{userName}/words/{word}")]
-    public async Task<ActionResult> UpdateUserWordLevel([FromRoute] string userName, [FromRoute] string word, [FromBody] UpdateUserWordLevelModel model)
+    [HttpPut("{userName}/words/{word}/increment-level")]
+    public async Task<ActionResult> IncrementUserWordLevel([FromRoute] string userName, [FromRoute] string word)
     {
         try
         {
-            await _service.UpdateUserWordLevel(userName, word, model.Level, model.NextReviewDay);
+            await _service.IncrementUserWordLevel(userName, word);
             return Ok();
         }
         catch (Exception e)
@@ -74,6 +74,21 @@ public class NIKController : ControllerBase
             return NotFound(e.Message);
         }
     }
+
+    [HttpPut("{userName}/words/{word}/decrement-level")]
+    public async Task<ActionResult> DecrementUserWordLevel([FromRoute] string userName, [FromRoute] string word)
+    {
+        try
+        {
+            await _service.DecrementUserWordLevel(userName, word);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
 
     [HttpPut("{userName}/words/{word}/synonyms")]
     public async Task<ActionResult> UpdateUserSynonyms([FromRoute] string userName, [FromRoute] string word, [FromBody] List<string> userSynonyms)
@@ -89,10 +104,4 @@ public class NIKController : ControllerBase
         }
     }
 
-}
-
-public class UpdateUserWordLevelModel
-{
-    public int Level { get; set; }
-    public DateOnly NextReviewDay { get; set; }
 }

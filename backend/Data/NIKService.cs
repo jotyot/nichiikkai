@@ -118,16 +118,6 @@ public class NIKService
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateUserWordLevel(string userName, string word, int level, DateOnly nextReviewDay)
-    {
-        var userWord = await getUserWord(userName, word);
-
-        userWord.Level = level;
-        userWord.NextReviewDay = nextReviewDay;
-
-        await _context.SaveChangesAsync();
-    }
-
     public async Task UpdateUserSynonyms(string userName, string word, List<string> userSynonyms)
     {
         var userWord = await getUserWord(userName, word);
@@ -135,6 +125,30 @@ public class NIKService
         userWord.UserSynonyms = userSynonyms;
 
         await _context.SaveChangesAsync();
+    }
+
+    private async Task updateUserWordLevel(UserWord userWord, int level)
+    {
+        IReviewIntervals ReviewIntervals = new DefaultReviewIntervals();
+
+        level = ReviewIntervals.BindLevel(level);
+
+        userWord.Level = level;
+        userWord.NextReviewDay = ReviewIntervals.GetNextReviewDay(level);
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task IncrementUserWordLevel(string userName, string word)
+    {
+        var userWord = await getUserWord(userName, word);
+        await updateUserWordLevel(userWord, userWord.Level + 1);
+    }
+
+    public async Task DecrementUserWordLevel(string userName, string word)
+    {
+        var userWord = await getUserWord(userName, word);
+        await updateUserWordLevel(userWord, userWord.Level - 1);
     }
 }
 
