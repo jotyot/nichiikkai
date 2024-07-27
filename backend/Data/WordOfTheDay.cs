@@ -15,11 +15,20 @@ public class WordGenerator
         var selectedLevels = await _service.GetSelectedLevels(userName);
 
         var wordPool = selectedLevels.Select(level => _wordList.GetWordsByLevel(level)).SelectMany(x => x).ToList();
+        var learnedWords = (await _service.GetUserWords(userName)).Select(uw => uw.Word).ToList();
+        wordPool = wordPool.Except(learnedWords).ToList();
 
-        var random = new Random();
-        var randomWord = random.Next(0, wordPool.Count);
+        // Return most common word if available
+        var wordFrequencyList = _wordList.GetWordFrequencyList();
+        var word = wordFrequencyList.FirstOrDefault(w => wordPool.Contains(w));
 
-        return wordPool[randomWord];
+        if (word == null)
+        {
+            var random = new Random();
+            word = wordPool[random.Next(wordPool.Count)];
+        }
+
+        return word;
     }
 }
 

@@ -164,6 +164,12 @@ public class NIKService
         await updateUserWordLevel(userWord, userWord.Level - 1);
     }
 
+    public async Task SkipUserWord(string userName, string word)
+    {
+        var userWord = await getUserWord(userName, word);
+        await updateUserWordLevel(userWord, 999);
+    }
+
     public async Task<string> GenerateWord(string userName)
     {
         var WordGenerator = new WordGenerator(this);

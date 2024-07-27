@@ -39,8 +39,8 @@ public class NIKController : ControllerBase
         return Ok(userWords);
     }
 
-    [HttpPost("{userName}/words")]
-    public async Task<ActionResult> AddUserWord([FromRoute] string userName, [FromBody] string word)
+    [HttpPost("{userName}/words/{word}")]
+    public async Task<ActionResult> AddUserWord([FromRoute] string userName, [FromRoute] string word)
     {
         await _service.AddUserWord(userName, word);
         return Ok();
@@ -89,6 +89,19 @@ public class NIKController : ControllerBase
         }
     }
 
+    [HttpPut("{userName}/words/{word}/skip")]
+    public async Task<ActionResult> SkipUserWord([FromRoute] string userName, [FromRoute] string word)
+    {
+        try
+        {
+            await _service.SkipUserWord(userName, word);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return NotFound(e.Message);
+        }
+    }
 
     [HttpPut("{userName}/words/{word}/synonyms")]
     public async Task<ActionResult> UpdateUserSynonyms([FromRoute] string userName, [FromRoute] string word, [FromBody] List<string> userSynonyms)
@@ -104,8 +117,8 @@ public class NIKController : ControllerBase
         }
     }
 
-    [HttpGet("{userName}/word-of-the-day")]
-    public async Task<ActionResult> GetWordOfTheDay([FromRoute] string userName)
+    [HttpGet("{userName}/generate-word")]
+    public async Task<ActionResult> GenerateWord([FromRoute] string userName)
     {
         var wordOfTheDay = await _service.GenerateWord(userName);
         return Ok(wordOfTheDay);
