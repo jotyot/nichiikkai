@@ -8,21 +8,16 @@ public interface IReviewIntervals
 
 public class DefaultReviewIntervals : IReviewIntervals
 {
-    private static Dictionary<int, int> Intervals
+    private Dictionary<int, int> Intervals = new Dictionary<int, int>
     {
-        get
-        {
-            return new Dictionary<int, int> {
-                {1, 1},
-                {2, 2},
-                {3, 7},
-                {4, 16},
-                {5, 35},
-                {6, 70},
-                {7, 180},
-            };
-        }
-    }
+        {1, 1},
+        {2, 2},
+        {3, 7},
+        {4, 16},
+        {5, 35},
+        {6, 70},
+        {7, 180},
+    };
 
     public int BindLevel(int level)
     {
