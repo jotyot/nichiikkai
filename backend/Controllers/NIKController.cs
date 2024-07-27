@@ -104,4 +104,11 @@ public class NIKController : ControllerBase
         }
     }
 
+    [HttpGet("{userName}/word-of-the-day")]
+    public async Task<ActionResult> GetWordOfTheDay([FromRoute] string userName)
+    {
+        var wordOfTheDay = await _service.GenerateWord(userName);
+        return Ok(wordOfTheDay);
+    }
+
 }

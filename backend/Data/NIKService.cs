@@ -54,8 +54,21 @@ public class NIKService
 
     public async Task UpdateSelectedLevels(string userName, List<string> selectedLevels)
     {
-        var user = await getUser(userName);
+        if (selectedLevels.Count == 0)
+        {
+            throw new Exception("Selected levels cannot be empty");
+        }
 
+        var validLevels = new List<string> { "N5", "N4", "N3", "N2", "N1" };
+        foreach (var level in selectedLevels)
+        {
+            if (!validLevels.Contains(level))
+            {
+                throw new Exception("Invalid level");
+            }
+        }
+
+        var user = await getUser(userName);
         user.SelectedLevels = selectedLevels;
         await _context.SaveChangesAsync();
     }
@@ -149,6 +162,12 @@ public class NIKService
     {
         var userWord = await getUserWord(userName, word);
         await updateUserWordLevel(userWord, userWord.Level - 1);
+    }
+
+    public async Task<string> GenerateWord(string userName)
+    {
+        var WordGenerator = new WordGenerator(this);
+        return await WordGenerator.GenerateWord(userName);
     }
 }
 
