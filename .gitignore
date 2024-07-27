@@ -1,3 +1,14 @@
 
 /backend/bin
 /backend/obj
+backend/bin/Debug/net8.0/backend.dll
+backend/bin/Debug/net8.0/backend.exe
+backend/bin/Debug/net8.0/backend.pdb
+backend/obj/Debug/net8.0/apphost.exe
+backend/obj/Debug/net8.0/backend.AssemblyInfo.cs
+backend/obj/Debug/net8.0/backend.AssemblyInfoInputs.cache
+backend/obj/Debug/net8.0/backend.dll
+backend/obj/Debug/net8.0/backend.pdb
+backend/obj/Debug/net8.0/backend.sourcelink.json
+backend/obj/Debug/net8.0/ref/backend.dll
+backend/obj/Debug/net8.0/refint/backend.dll
