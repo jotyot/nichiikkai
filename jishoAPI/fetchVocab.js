@@ -40,31 +40,34 @@ const getWanikaniVocab = async (word) => {
     }   
 }
 
-const JishoAPI = require('unofficial-jisho-api')
-const jisho = new JishoAPI()
-
 const getJishoVocab = async (word) => {
-    const result = await jisho.searchForPhrase(word)
-    const firstResult = result.data[0]
-    const response = {
-        word: firstResult.japanese[0].word,
-        reading: firstResult.japanese[0].reading,
-        meaning: firstResult.senses[0].english_definitions,
-        partsOfSpeech: firstResult.senses[0].parts_of_speech,
-        jlptLevel: firstResult.jlpt[0],
-        sentences: []
-    }
-    return response
-}
+  const result = await fetch(
+    `https://jisho.org/api/v1/search/words?keyword=${word}`
+  );
+  const data = await result.json();
+  const firstResult = data.data[0];
+  const response = {
+    word: firstResult.japanese[0].word ?? firstResult.slug,
+    reading: firstResult.japanese[0].reading,
+    meaning: firstResult.senses[0].english_definitions,
+    partsOfSpeech: firstResult.senses[0].parts_of_speech,
+    jlptLevel: firstResult.jlpt[0],
+    sentences: [],
+  };
+  return response;
+};
 
-const getJishoSentences = async (word) => {
-    const sentences = await jisho.searchForExamples(word)
-    // Needs a more sophisticated way to choose sentences
-    return sentences.results.slice(0, 3).map(sentence => ({
-        japanese: sentence.kanji,
-        english: sentence.english,
-    }))
-}
+const getTatoebaSentences = async (word) => {
+  const numSentences = 5;
+  const result = await fetch(
+    `https://tatoeba.org/en/api_v0/search?from=jpn&query=${word}&to=eng`
+  );
+  const data = await result.json();
+  return data.results.slice(0, numSentences).map((sentence) => ({
+    japanese: sentence.text,
+    english: sentence.translations[0][0].text,
+  }));
+};
 
 /*
     Prefers Wanikani data, gets the jlpt level from Jisho
@@ -72,16 +75,16 @@ const getJishoSentences = async (word) => {
     Returns a VocabInfo object
 */
 const createVocabInfo = async (word) => {
-    const wanikaniResult = await getWanikaniVocab(word)
-    const jishoResult = await getJishoVocab(word)
-    if (wanikaniResult) {
-        wanikaniResult.jlptLevel = jishoResult.jlptLevel
-        return wanikaniResult
-    } else {
-        jishoResult.sentences = await getJishoSentences(word)
-        return jishoResult
-    }
-}
+  const wanikaniResult = await getWanikaniVocab(word);
+  const jishoResult = await getJishoVocab(word);
+  if (wanikaniResult) {
+    wanikaniResult.jlptLevel = jishoResult.jlptLevel;
+    return wanikaniResult;
+  } else {
+    jishoResult.sentences = await getTatoebaSentences(jishoResult.word);
+    return jishoResult;
+  }
+};
 
 module.exports = {
   createVocabInfo,
