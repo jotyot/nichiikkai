@@ -58,21 +58,16 @@ public class LocalWordList : IWordList
     }
 
     public List<string> GetWordFrequencyList() => ReadWordsFromFile(_wordFrequencyListPath);
-    public List<string> GetN5Words() => ReadWordsFromFile(_n5WordsPath);
-    public List<string> GetN4Words() => ReadWordsFromFile(_n4WordsPath);
-    public List<string> GetN3Words() => ReadWordsFromFile(_n3WordsPath);
-    public List<string> GetN2Words() => ReadWordsFromFile(_n2WordsPath);
-    public List<string> GetN1Words() => ReadWordsFromFile(_n1WordsPath);
 
     public List<string> GetWordsByLevel(string level)
     {
         return level switch
         {
-            "N5" => GetN5Words(),
-            "N4" => GetN4Words(),
-            "N3" => GetN3Words(),
-            "N2" => GetN2Words(),
-            "N1" => GetN1Words(),
+            "N5" => ReadWordsFromFile(_n5WordsPath),
+            "N4" => ReadWordsFromFile(_n4WordsPath),
+            "N3" => ReadWordsFromFile(_n3WordsPath),
+            "N2" => ReadWordsFromFile(_n2WordsPath),
+            "N1" => ReadWordsFromFile(_n1WordsPath),
             _ => throw new Exception("Invalid level")
         };
     }

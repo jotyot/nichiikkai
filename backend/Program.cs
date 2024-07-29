@@ -1,5 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using NIKAPI.Data;
+using DotNetEnv;
+
+Env.Load();
+
+var UserDbConnectionString = Env.GetString("USERDB_CONNECTION_STRING");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<NIKDbContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("UserDb"))
+    options => options.UseSqlServer(UserDbConnectionString)
 );
 builder.Services.AddIdentityApiEndpoints<NIKUser>().AddEntityFrameworkStores<NIKDbContext>();
 builder.Services.AddAuthorization(options =>
