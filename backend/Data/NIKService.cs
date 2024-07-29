@@ -119,6 +119,11 @@ public class NIKService
             throw new Exception("User not found");
         }
 
+        if (user.UserWords.FirstOrDefault(uw => uw.Word == word) != null)
+        {
+            throw new Exception("Word already exists");
+        }
+
         var userWord = new UserWord
         {
             UserId = user.Id,

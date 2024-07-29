@@ -40,12 +40,12 @@ public interface IWordList
 
 public class LocalWordList : IWordList
 {
-    private string _wordFrequencyListPath = "Words/jpwordfreq.txt";
-    private string _n5WordsPath = "Words/n5words.txt";
-    private string _n4WordsPath = "Words/n4words.txt";
-    private string _n3WordsPath = "Words/n3words.txt";
-    private string _n2WordsPath = "Words/n2words.txt";
-    private string _n1WordsPath = "Words/n1words.txt";
+    private readonly string _wordFrequencyListPath = "Words/jpwordfreq.txt";
+    private readonly string _n5WordsPath = "Words/n5words.txt";
+    private readonly string _n4WordsPath = "Words/n4words.txt";
+    private readonly string _n3WordsPath = "Words/n3words.txt";
+    private readonly string _n2WordsPath = "Words/n2words.txt";
+    private readonly string _n1WordsPath = "Words/n1words.txt";
 
     private List<string> ReadWordsFromFile(string filePath)
     {
