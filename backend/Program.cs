@@ -5,7 +5,6 @@ using DotNetEnv;
 Env.Load();
 
 var UserDbConnectionString = Env.GetString("USERDB_CONNECTION_STRING");
-var WordDbConnectionString = Env.GetString("WORDDB_CONNECTION_STRING");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,9 +14,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<NIKDbContext>(
     options => options.UseSqlServer(UserDbConnectionString)
-);
-builder.Services.AddDbContext<DictionaryDbContext>(
-    options => options.UseSqlServer(WordDbConnectionString)
 );
 builder.Services.AddIdentityApiEndpoints<NIKUser>().AddEntityFrameworkStores<NIKDbContext>();
 builder.Services.AddAuthorization(options =>
@@ -32,7 +28,6 @@ builder.Services.AddAuthorization(options =>
     );
 });
 builder.Services.AddScoped<NIKService>();
-builder.Services.AddScoped<DictionaryService>();
 builder.Services.AddControllers();
 
 var app = builder.Build();
@@ -49,13 +44,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapGroup("/identity").MapIdentityApi<NIKUser>();
-
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    var dictionaryService = services.GetRequiredService<DictionaryService>();
-    var wordMigration = new WordMigration(dictionaryService);
-    await wordMigration.MigrateWords();
-}
 
 app.Run();

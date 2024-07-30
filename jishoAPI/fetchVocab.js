@@ -4,7 +4,7 @@ const wanikaniAPIkey = process.env.WANIKANI_API_KEY
 /*
     The VocabInfo object has the following properties:
     word: string
-    reading: string
+    reading: string[]
     meaning: string[]
     partsOfSpeech: string[]
     jlptLevel: string
@@ -26,7 +26,7 @@ const getWanikaniVocab = async (word) => {
         const firstResult = data.data[0].data
         return {
             word: firstResult.characters,
-            reading: firstResult.readings[0].reading,
+            reading: firstResult.readings.filter(reading => reading.accepted_answer).map(reading => reading.reading),
             meaning: firstResult.meanings.map(meaning => meaning.meaning),
             partsOfSpeech: firstResult.parts_of_speech,
             jlptLevel: "N/A",
@@ -48,7 +48,7 @@ const getJishoVocab = async (word) => {
   const firstResult = data.data[0];
   const response = {
     word: firstResult.japanese[0].word ?? firstResult.slug,
-    reading: firstResult.japanese[0].reading,
+    reading: firstResult.japanese.filter((japanese) => japanese.word === word || japanese.word === undefined).map((japanese) => japanese.reading),
     meaning: firstResult.senses[0].english_definitions,
     partsOfSpeech: firstResult.senses[0].parts_of_speech,
     jlptLevel: firstResult.jlpt[0],
@@ -58,15 +58,21 @@ const getJishoVocab = async (word) => {
 };
 
 const getTatoebaSentences = async (word) => {
-  const numSentences = 5;
   const result = await fetch(
     `https://tatoeba.org/en/api_v0/search?from=jpn&query=${word}&to=eng`
   );
   const data = await result.json();
-  return data.results.slice(0, numSentences).map((sentence) => ({
-    japanese: sentence.text,
-    english: sentence.translations[0][0].text,
-  }));
+  const numSentences = 5;
+  return data.results.slice(0, numSentences).map((sentence) => {
+    try {
+      return {
+        japanese: sentence.text,
+        english: sentence.translations[0][0].text,
+      }
+    } catch (error) {
+      return null
+    }    
+  }).filter(sentence => sentence !== null);
 };
 
 /*
