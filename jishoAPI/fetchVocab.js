@@ -75,42 +75,47 @@ const getJishoVocab = async (word, reading) => {
   Use sentence transcriptions to filter out sentences that don't match the reading
 */
 const getTatoebaSentences = async (word, reading) => {
-  word = word.replace(/(~|～|〜)/g, "")
+  word = word.replace(/(~|～|〜)/g, "");
 
   const result = await fetch(
     `https://tatoeba.org/en/api_v0/search?from=jpn&query=${word}&to=eng`
   );
   const data = (await result.json()).results;
   const numSentences = 5;
-  return data.filter(
-    (sentence) => {
-      if (reading === undefined) return true
+  return data
+    .filter((sentence) => {
+      if (reading === undefined) return true;
 
-      const transcription = sentence.transcriptions[0].text
-      const regex = /\[(.*?)\]/g
-      const matches = transcription.match(regex)
-      if (matches == null) return false
-   
+      const transcription = sentence.transcriptions[0].text;
+      const regex = /\[(.*?)\]/g;
+      const matches = transcription.match(regex);
+      if (matches == null) return false;
+
       // [[kanji, kana, kana, ...], [kanji, kana, ...], ...]
       // assuming the format is whole kanji word, with kana readings of each kanji
-      const words = matches.map(match => match.slice(1, -1).split('|'));
-      return words.some(
-        wordArray => {
-          if (wordArray[0].indexOf(word) === -1) return false
-          return wordArray[0].indexOf(word) + 1 === wordArray.indexOf(reading)
-        }
-      )
-    }
-  ).slice(0, numSentences).map((sentence) => {
-    try {
-      return {
-        japanese: sentence.text,
-        english: sentence.translations[0][0].text,
+      const words = matches.map((match) => match.slice(1, -1).split("|"));
+      return words.some((wordArray) => {
+        const wordStartIndex = wordArray[0].indexOf(word[0]);
+        if (wordStartIndex === -1) return false;
+        return (
+          wordArray
+            .slice(wordStartIndex + 1, word.length + wordStartIndex + 1)
+            .join("") === reading
+        );
+      });
+    })
+    .slice(0, numSentences)
+    .map((sentence) => {
+      try {
+        return {
+          japanese: sentence.text,
+          english: sentence.translations[0][0].text,
+        };
+      } catch (error) {
+        return null;
       }
-    } catch (error) {
-      return null
-    }
-  }).filter(sentence => sentence !== null);
+    })
+    .filter((sentence) => sentence !== null);
 };
 
 /*
@@ -121,6 +126,10 @@ const getTatoebaSentences = async (word, reading) => {
 const createVocabInfo = async (word, reading) => {
   const wanikaniResult = await getWanikaniVocab(word, reading);
   const jishoResult = await getJishoVocab(word, reading);
+  // in case the reading given doesn't match anything, default to the first reading from jisho
+  reading = jishoResult.reading.includes(reading)
+    ? reading
+    : jishoResult.reading[0];
   if (wanikaniResult) {
     return wanikaniResult;
   } else {
