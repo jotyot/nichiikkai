@@ -51,16 +51,25 @@ const getWanikaniVocab = async (word, reading) => {
 };
 
 const getJishoVocab = async (word, reading) => {
-  word = word.replace(/(~|～|〜)/g, "")
+  word = word.replace(/(~|～|〜)/g, "");
 
   // filter out words that don't match the reading
-  const getReading = (entry) => entry.japanese.filter((japanese) => japanese.word === word || japanese.word === undefined).map((japanese) => japanese.reading)
+  const getReading = (entry) => {
+    const readingMatch = entry.japanese
+      .filter(
+        (japanese) => japanese.word === word || japanese.word === undefined
+      )
+      .map((japanese) => japanese.reading);
+    return readingMatch.length > 0 ? readingMatch : [entry.japanese[0].reading];
+  };
 
   const result = await fetch(
     `https://jisho.org/api/v1/search/words?keyword=${word}`
   );
   const data = await result.json();
-  const firstResult = data.data.find((result) => getReading(result).includes(reading)) ?? data.data[0];
+  const firstResult =
+    data.data.find((result) => getReading(result).includes(reading)) ??
+    data.data[0];
   const response = {
     word: firstResult.japanese[0].word ?? firstResult.slug,
     reading: getReading(firstResult),
@@ -85,6 +94,7 @@ const getTatoebaSentences = async (word, reading) => {
   return data
     .filter((sentence) => {
       if (reading === undefined) return true;
+      if (reading === word) return true;
 
       const transcription = sentence.transcriptions[0].text;
       const regex = /\[(.*?)\]/g;
@@ -95,8 +105,11 @@ const getTatoebaSentences = async (word, reading) => {
       // assuming the format is whole kanji word, with kana readings of each kanji
       const words = matches.map((match) => match.slice(1, -1).split("|"));
       return words.some((wordArray) => {
+        console.log(wordArray);
         const wordStartIndex = wordArray[0].indexOf(word[0]);
         if (wordStartIndex === -1) return false;
+
+        // try to match the kanjis in wordArray[0] to the kanas in wordArray
         return (
           wordArray
             .slice(wordStartIndex + 1, word.length + wordStartIndex + 1)
@@ -127,13 +140,14 @@ const createVocabInfo = async (word, reading) => {
   const wanikaniResult = await getWanikaniVocab(word, reading);
   const jishoResult = await getJishoVocab(word, reading);
   // in case the reading given doesn't match anything, default to the first reading from jisho
-  reading = jishoResult.reading.includes(reading)
-    ? reading
-    : jishoResult.reading[0];
+  // cuz the reading we want could be the second reading
   if (wanikaniResult) {
     return wanikaniResult;
   } else {
-    jishoResult.sentences = await getTatoebaSentences(word, reading);
+    jishoResult.sentences = await getTatoebaSentences(
+      jishoResult.word,
+      jishoResult.reading.includes(reading) ? reading : jishoResult.reading[0]
+    );
     return jishoResult;
   }
 };
