@@ -91,12 +91,24 @@ const getJishoVocab = async (word, reading) => {
   return response;
 };
 
+// For okurigana words, truncate the word and reading to match
+function truncateMatchingCharacters(word, reading) {
+  let i = word.length - 1;
+  let j = reading.length - 1;
+
+  while (i >= 0 && j >= 0 && word[i] === reading[j]) { i--; j--; }
+
+  return [word.slice(0, i + 1), reading.slice(0, j + 1)];
+}
+
 /*
   Use sentence transcriptions to filter out sentences that don't match the reading
 */
 const matchReadingSentences = (sentences, word, reading) => {
   if (reading === undefined) return sentences;
   if (reading === word) return sentences;
+
+  [word, reading] = truncateMatchingCharacters(word, reading);
 
   return sentences.filter((sentence) => {
     const transcription = sentence.transcriptions[0].text;
@@ -122,6 +134,8 @@ const matchReadingSentences = (sentences, word, reading) => {
 };
 
 const getTatoebaSentences = async (word, reading, pageNo = 1) => {
+  if (pageNo > 3) return [];
+
   word = word.replace(/(~|～|〜)/g, "");
 
   const result = await fetch(
