@@ -81,8 +81,12 @@ const getJishoVocab = async (word, reading) => {
     data.find((entry) =>
       getReadingsFromJishoEntry(entry, word).includes(reading)
     ) ?? data[0];
+
   const response = {
-    word: firstResult.japanese[0].word ?? firstResult.slug,
+    word:
+      firstResult.japanese.find((japanese) => japanese.word === word)?.word ??
+      firstResult.japanese[0].word ??
+      firstResult.slug,
     reading: getReadingsFromJishoEntry(firstResult, word),
     meaning: firstResult.senses[0].english_definitions,
     partsOfSpeech: firstResult.senses[0].parts_of_speech,
