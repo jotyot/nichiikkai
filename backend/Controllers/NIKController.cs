@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using NIKAPI.Data;
 
-namespace NIK.Controllers;
+namespace NIKAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]

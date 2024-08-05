@@ -41,6 +41,7 @@ public class UserWordDTO
 
 public class WordPair : IEquatable<WordPair>
 {
+    public int Id { get; set; }
     public required string Word { get; set; }
     public required string Reading { get; set; }
 

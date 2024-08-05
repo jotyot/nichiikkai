@@ -52,7 +52,7 @@ public class SentenceData
     public required string English { get; set; }
 }
 
-public class WordDataDTO
+public class WordDataLimited
 {
     public required WordPair WordPair { get; set; }
     public required string JLPTLevel { get; set; }
