@@ -24,7 +24,7 @@ public class NIKService
         return user;
     }
 
-    private async Task<UserWord> getUserWord(string userName, string word)
+    private async Task<UserWord> getUserWord(string userName, WordPair wordPair)
     {
         var user = await _context.NIKUsers
             .Include(u => u.UserWords)
@@ -35,7 +35,7 @@ public class NIKService
             throw new Exception("User not found");
         }
 
-        var userWord = user.UserWords.FirstOrDefault(uw => uw.Word == word);
+        var userWord = user.UserWords.FirstOrDefault(uw => uw.WordPair.Equals(wordPair));
 
         if (userWord == null)
         {
@@ -87,7 +87,7 @@ public class NIKService
         // Avoid circular reference with userId
         var userWords = user.UserWords.Select(uw => new UserWordDTO
         {
-            Word = uw.Word,
+            WordPair = uw.WordPair,
             Level = uw.Level,
             NextReviewDay = uw.NextReviewDay,
             UserSynonyms = uw.UserSynonyms,
@@ -96,20 +96,20 @@ public class NIKService
         return userWords;
     }
 
-    public async Task<UserWordDTO> GetUserWord(string userName, string word)
+    public async Task<UserWordDTO> GetUserWord(string userName, WordPair wordPair)
     {
-        var userWord = await getUserWord(userName, word);
+        var userWord = await getUserWord(userName, wordPair);
 
         return new UserWordDTO
         {
-            Word = userWord.Word,
+            WordPair = userWord.WordPair,
             Level = userWord.Level,
             NextReviewDay = userWord.NextReviewDay,
             UserSynonyms = userWord.UserSynonyms,
         };
     }
 
-    public async Task AddUserWord(string userName, string word)
+    public async Task AddUserWord(string userName, WordPair wordPair)
     {
         var user = await _context.NIKUsers
             .FirstOrDefaultAsync(u => u.UserName == userName);
@@ -119,7 +119,7 @@ public class NIKService
             throw new Exception("User not found");
         }
 
-        if (user.UserWords.FirstOrDefault(uw => uw.Word == word) != null)
+        if (user.UserWords.FirstOrDefault(uw => uw.WordPair.Equals(wordPair)) != null)
         {
             throw new Exception("Word already exists");
         }
@@ -128,7 +128,7 @@ public class NIKService
         {
             UserId = user.Id,
             User = user,
-            Word = word,
+            WordPair = wordPair
         };
 
         user.UserWords.Add(userWord);
@@ -136,9 +136,9 @@ public class NIKService
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateUserSynonyms(string userName, string word, List<string> userSynonyms)
+    public async Task UpdateUserSynonyms(string userName, WordPair wordPair, List<string> userSynonyms)
     {
-        var userWord = await getUserWord(userName, word);
+        var userWord = await getUserWord(userName, wordPair);
 
         userWord.UserSynonyms = userSynonyms;
 
@@ -157,21 +157,21 @@ public class NIKService
         await _context.SaveChangesAsync();
     }
 
-    public async Task IncrementUserWordLevel(string userName, string word)
+    public async Task IncrementUserWordLevel(string userName, WordPair wordPair)
     {
-        var userWord = await getUserWord(userName, word);
+        var userWord = await getUserWord(userName, wordPair);
         await updateUserWordLevel(userWord, userWord.Level + 1);
     }
 
-    public async Task DecrementUserWordLevel(string userName, string word)
+    public async Task DecrementUserWordLevel(string userName, WordPair wordPair)
     {
-        var userWord = await getUserWord(userName, word);
+        var userWord = await getUserWord(userName, wordPair);
         await updateUserWordLevel(userWord, userWord.Level - 1);
     }
 
-    public async Task SkipUserWord(string userName, string word)
+    public async Task SkipUserWord(string userName, WordPair wordPair)
     {
-        var userWord = await getUserWord(userName, word);
+        var userWord = await getUserWord(userName, wordPair);
         await updateUserWordLevel(userWord, 999);
     }
 
@@ -180,12 +180,4 @@ public class NIKService
         var WordGenerator = new WordGenerator(this);
         return await WordGenerator.GenerateWord(userName);
     }
-}
-
-public class UserWordDTO
-{
-    public required string Word { get; set; }
-    public int Level { get; set; }
-    public DateOnly NextReviewDay { get; set; }
-    public List<string> UserSynonyms { get; set; } = new List<string>();
 }
