@@ -14,7 +14,7 @@ public class DictionaryController : ControllerBase
         _dictionaryService = dictionaryService;
     }
 
-    [HttpGet("words/{word}/{reading}")]
+    [HttpGet("{word}/{reading}")]
     public async Task<ActionResult<WordData>> GetWordData([FromRoute] string word, [FromRoute] string reading)
     {
         var wordPair = new WordPair { Word = word, Reading = reading };
@@ -29,7 +29,7 @@ public class DictionaryController : ControllerBase
         }
     }
 
-    [HttpGet("words")]
+    [HttpGet]
     public async Task<ActionResult<List<WordDataLimited>>> GetWords([FromQuery] List<string> levels, [FromQuery] string jlptOrder = "ascending", [FromQuery] string orderBy = "alphabetical")
     {
         try
@@ -47,7 +47,7 @@ public class DictionaryController : ControllerBase
         }
     }
 
-    [HttpPost("words")]
+    [HttpPost]
     public async Task<ActionResult> AddWord([FromBody] WordData wordData)
     {
         try
@@ -61,7 +61,7 @@ public class DictionaryController : ControllerBase
         }
     }
 
-    [HttpDelete("words/{word}/{reading}")]
+    [HttpDelete("{word}/{reading}")]
     public async Task<ActionResult> DeleteWord([FromRoute] string word, [FromRoute] string reading)
     {
         var wordPair = new WordPair { Word = word, Reading = reading };
