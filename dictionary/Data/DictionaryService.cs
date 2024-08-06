@@ -9,10 +9,22 @@ public class DictionaryService
         _context = context;
     }
 
+    private async Task<WordData?> getWordData(WordPair wordPair)
+    {
+        var words = await _context.Words
+            .Include(w => w.WordPair)
+            .Include(w => w.Sentences)
+            .ToListAsync();
+
+        // .FirstOrDefaultAsync(w => w.WordPair.Equals(wordPair)) doesn't work for some reason 
+        // I'm guessing the Equals doesn't work when the WordPair is a navigation property
+        return words.Find(w => w.WordPair.Equals(wordPair));
+    }
+
+
     public async Task<WordData> GetWordData(WordPair wordPair)
     {
-        var wordData = await _context.Words
-            .FirstOrDefaultAsync(w => w.WordPair.Equals(wordPair));
+        var wordData = await getWordData(wordPair);
 
         if (wordData == null)
         {
@@ -50,7 +62,7 @@ public class DictionaryService
                 words = orderedWords.ThenBy(w => w.WordPair.Reading);
                 break;
             case "frequency":
-                words = orderedWords.ThenBy(w => w.FrequencyRank);
+                words = orderedWords.ThenBy(w => w.FrequencyRank > 0).ThenBy(w => w.FrequencyRank);
                 break;
         }
 
@@ -65,30 +77,24 @@ public class DictionaryService
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateWord(WordPair wordPair, WordData wordData)
-    {
-        var existingWordData = await _context.Words
-            .FirstOrDefaultAsync(w => w.WordPair.Equals(wordPair));
-
-        if (existingWordData == null)
-        {
-            throw new Exception("Word not found");
-        }
-
-        existingWordData = wordData;
-
-        await _context.SaveChangesAsync();
-    }
-
     public async Task DeleteWord(WordPair wordPair)
     {
-        var wordData = await _context.Words
-            .FirstOrDefaultAsync(w => w.WordPair.Equals(wordPair));
+        var wordData = await getWordData(wordPair);
 
         if (wordData == null)
         {
             throw new Exception("Word not found");
         }
+
+        var relatedWordPair = await _context.WordPairs
+            .Where(wp => wp.Id == wordData.WordPair.Id)
+            .ToListAsync();
+        _context.WordPairs.RemoveRange(relatedWordPair);
+
+        var relatedSentences = await _context.Sentences
+            .Where(s => wordData.Sentences.Select(ws => ws.Id).Contains(s.Id))
+            .ToListAsync();
+        _context.Sentences.RemoveRange(relatedSentences);
 
         _context.Words.Remove(wordData);
         await _context.SaveChangesAsync();

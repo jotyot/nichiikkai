@@ -61,21 +61,6 @@ public class DictionaryController : ControllerBase
         }
     }
 
-    [HttpPut("words/{word}/{reading}")]
-    public async Task<ActionResult> UpdateWord([FromRoute] string word, [FromRoute] string reading, [FromBody] WordData wordData)
-    {
-        var wordPair = new WordPair { Word = word, Reading = reading };
-        try
-        {
-            await _dictionaryService.UpdateWord(wordPair, wordData);
-            return Ok();
-        }
-        catch (Exception e)
-        {
-            return NotFound(e.Message);
-        }
-    }
-
     [HttpDelete("words/{word}/{reading}")]
     public async Task<ActionResult> DeleteWord([FromRoute] string word, [FromRoute] string reading)
     {

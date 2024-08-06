@@ -14,6 +14,7 @@ public class NIKService
     private async Task<NIKUser> getUser(string userName)
     {
         var user = await _context.NIKUsers
+            .Include(u => u.UserWords) // Eager loading
             .FirstOrDefaultAsync(u => u.UserName == userName);
 
         if (user == null)
@@ -76,7 +77,6 @@ public class NIKService
     public async Task<ICollection<UserWordDTO>> GetUserWords(string userName)
     {
         var user = await _context.NIKUsers
-            .Include(u => u.UserWords) // Eager loading
             .FirstOrDefaultAsync(u => u.UserName == userName);
 
         if (user == null)
@@ -111,8 +111,7 @@ public class NIKService
 
     public async Task AddUserWord(string userName, WordPair wordPair)
     {
-        var user = await _context.NIKUsers
-            .FirstOrDefaultAsync(u => u.UserName == userName);
+        var user = await getUser(userName);
 
         if (user == null)
         {

@@ -7,6 +7,8 @@ public class DictionaryContext : DbContext
     }
 
     public DbSet<WordData> Words { get; set; } = null!;
+    public DbSet<WordPair> WordPairs { get; set; } = null!;
+    public DbSet<SentenceData> Sentences { get; set; } = null!;
 }
 
 public class WordData
