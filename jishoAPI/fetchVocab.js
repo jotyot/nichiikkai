@@ -215,4 +215,5 @@ const createVocabInfo = async (word, reading) => {
 
 module.exports = {
   createVocabInfo,
+  getWanikaniVocab,
 };

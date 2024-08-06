@@ -30,7 +30,7 @@ public class DictionaryController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<WordDataLimited>>> GetWords([FromQuery] List<string> levels, [FromQuery] string jlptOrder = "ascending", [FromQuery] string orderBy = "alphabetical")
+    public async Task<ActionResult<List<WordDataLimited>>> GetWords([FromQuery] List<string> levels, [FromQuery] string jlptOrder = "ascending", [FromQuery] string orderBy = "alphabetical", [FromQuery] int page = 1)
     {
         try
         {
@@ -38,7 +38,7 @@ public class DictionaryController : ControllerBase
             {
                 levels = new List<string> { "N5", "N4", "N3", "N2", "N1" };
             }
-            var result = await _dictionaryService.GetWords(levels, jlptOrder, orderBy);
+            var result = await _dictionaryService.GetWords(levels, jlptOrder, orderBy, page);
             return result;
         }
         catch (Exception e)

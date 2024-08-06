@@ -34,8 +34,10 @@ public class DictionaryService
         return wordData;
     }
 
-    public async Task<List<WordDataLimited>> GetWords(List<string> levels, string jlptOrder = "ascending", string orderBy = "alphabetical")
+    public async Task<List<WordDataLimited>> GetWords(List<string> levels, string jlptOrder = "ascending", string orderBy = "alphabetical", int page = 1)
     {
+        const int pageSize = 20;
+
         var words = _context.Words
             .Select(w => new WordDataLimited
             {
@@ -66,7 +68,7 @@ public class DictionaryService
                 break;
         }
 
-        var result = await words.ToListAsync();
+        var result = await words.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
         return result;
     }
