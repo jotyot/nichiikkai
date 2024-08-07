@@ -1,11 +1,14 @@
-require('dotenv').config()
-const wanikaniAPIkey = process.env.WANIKANI_API_KEY
+const { getTatoebaSentences } = require("./fetchSentences.js");
+
+require("dotenv").config();
+const wanikaniAPIkey = process.env.WANIKANI_API_KEY;
 
 /*
   The VocabInfo object has the following properties:
   word: string
-  reading: string[]
-  meaning: string[]
+  reading: string
+  readings: string[]
+  meanings: string[]
   partsOfSpeech: string[]
   sentences: {japanese: string, english: string}[]
 */
@@ -31,10 +34,11 @@ const getWanikaniVocab = async (word, reading) => {
     const firstResult = data[0].data;
     const vocabObject = {
       word: firstResult.characters,
-      reading: firstResult.readings
-        .filter((reading) => reading.accepted_answer)
-        .map((reading) => reading.reading),
-      meaning: firstResult.meanings.map((meaning) => meaning.meaning),
+      reading: undefined,
+      readings: firstResult.readings
+        .filter((r) => r.accepted_answer)
+        .map((r) => r.reading),
+      meanings: firstResult.meanings.map((meaning) => meaning.meaning),
       partsOfSpeech: firstResult.parts_of_speech,
       sentences: firstResult.context_sentences.map((sentence) => ({
         japanese: sentence.ja,
@@ -42,9 +46,11 @@ const getWanikaniVocab = async (word, reading) => {
       })),
     };
 
-    if (reading && !vocabObject.reading.includes(reading)) {
-      throw new Error("Reading doesn't match");
-    }
+    if (reading) {
+      if (!vocabObject.reading.includes(reading))
+        throw new Error("Reading doesn't match");
+      else vocabObject.reading = reading;
+    } else vocabObject.reading = vocabObject.readings[0];
 
     return vocabObject;
   } catch (error) {
@@ -70,12 +76,37 @@ const getReadingsFromJishoEntry = (entry, targetWord) => {
   return readingMatch;
 };
 
-const kanaOnlyWordFilter = (word) => (entry) =>
-  entry.japanese.some(
-    (japanese) => japanese.reading === word && japanese.word === undefined
+const kanaOnlyEntry = (data, word) => {
+  return data.find((entry) =>
+    entry.japanese.some(
+      (japanese) => japanese.reading === word && japanese.word === undefined
+    )
   );
+};
+
+const readingMatchEntries = (data, word, reading) => {
+  return data.filter((entry) => {
+    const readings = getReadingsFromJishoEntry(entry, word);
+    return readings.includes(reading) || readings.includes(word);
+  });
+};
+
+const suffixSenseFilter = (sense) => {
+  const s = sense.parts_of_speech.map((se) => se.toLowerCase());
+  return (
+    s.includes("counter") ||
+    s.some((part) => part.includes("suffix")) ||
+    s.includes("suffix") ||
+    s.includes("auxiliary verb")
+  );
+};
+
+const suffixEntry = (data) => {
+  return data.find((entry) => entry.senses.some(suffixSenseFilter));
+};
 
 const getJishoVocab = async (word, reading) => {
+  const isSuffix = word.match(/(~|～|〜).+/g) !== null;
   word = word.replace(/(~|～|〜)/g, "");
 
   const result = await fetch(
@@ -83,109 +114,40 @@ const getJishoVocab = async (word, reading) => {
   );
   const data = (await result.json()).data;
 
-  const firstResult =
-    data.find(kanaOnlyWordFilter(word)) ??
-    data.find((entry) => {
-      const readings = getReadingsFromJishoEntry(entry, word);
-      return readings.includes(reading) || readings.includes(word);
-    }) ??
-    data[0];
+  var chosenEntry;
+  const readingMatches = readingMatchEntries(data, word, reading);
+  if (readingMatches.length === 0) {
+    if (reading) throw new Error("Reading doesn't match");
+    chosenEntry = data[0];
+  } else {
+    if (isSuffix)
+      chosenEntry = suffixEntry(readingMatches) ?? readingMatches[0];
+    else chosenEntry = kanaOnlyEntry(readingMatches, word) ?? readingMatches[0];
+  }
+
+  const chosenSense = isSuffix
+    ? chosenEntry.senses.find(suffixSenseFilter) ?? chosenEntry.senses[0]
+    : chosenEntry.senses[0];
 
   const response = {
     word:
-      firstResult.japanese.find((japanese) => japanese.word === word)?.word ?? // find the word with request kanji
-      firstResult.japanese.find((japanese) => japanese.reading === word)
+      chosenEntry.japanese.find((japanese) => japanese.word === word)?.word ?? // find the word with requested kanji
+      chosenEntry.japanese.find((japanese) => japanese.reading === word)
         ?.reading ?? // find word if it's a reading
-      firstResult.japanese[0].word, // if no match, default to first word
-    reading: getReadingsFromJishoEntry(firstResult, word),
-    meaning: firstResult.senses[0].english_definitions,
-    partsOfSpeech: firstResult.senses[0].parts_of_speech,
+      chosenEntry.japanese[0].word ?? // if no match, default to first word
+      chosenEntry.japanese[0].reading, // and some dont have words and are just readings
+    reading: undefined,
+    readings: getReadingsFromJishoEntry(chosenEntry, word),
+    meanings: chosenSense.english_definitions,
+    partsOfSpeech: chosenSense.parts_of_speech,
     sentences: [],
   };
-  console.log(firstResult.slug);
+
+  if (response.readings.includes(word)) response.reading = word;
+  else if (response.readings.includes(reading)) response.reading = reading;
+  else response.reading = response.readings[0];
+
   return response;
-};
-
-// For okurigana words, truncate the word and reading to match
-function truncateMatchingCharacters(word, reading) {
-  let i = word.length - 1;
-  let j = reading.length - 1;
-
-  while (i >= 0 && j >= 0 && word[i] === reading[j]) {
-    i--;
-    j--;
-  }
-
-  return [word.slice(0, i + 1), reading.slice(0, j + 1)];
-}
-
-/*
-  Use sentence transcriptions to filter out sentences that don't match the reading
-*/
-const matchReadingSentences = (sentences, word, reading) => {
-  sentences = sentences.filter((sentence) =>
-    sentence.text.includes(word.slice(0, -1))
-  );
-
-  if (reading === undefined) return sentences;
-  if (reading === word) return sentences;
-
-  [word, reading] = truncateMatchingCharacters(word, reading);
-
-  return sentences.filter((sentence) => {
-    const transcription = sentence.transcriptions[0].text;
-    const regex = /\[(.*?)\]/g;
-    const matches = transcription.match(regex);
-    if (matches == null) return false;
-
-    // [[kanji, kana, kana, ...], [kanji, kana, ...], ...]
-    // assuming the format is whole kanji word, with kana readings of each kanji
-    const words = matches.map((match) => match.slice(1, -1).split("|"));
-    return words.some((wordArray) => {
-      const wordStartIndex = wordArray[0].indexOf(word[0]);
-      if (wordStartIndex === -1) return false;
-
-      // try to match the kanjis in wordArray[0] to the kanas in wordArray
-      return (
-        wordArray
-          .slice(wordStartIndex + 1, word.length + wordStartIndex + 1)
-          .join("") === reading
-      );
-    });
-  });
-};
-
-const getTatoebaSentences = async (word, reading, pageNo = 1) => {
-  if (pageNo > 3) return [];
-
-  console.log(`Fetching page ${pageNo} for ${word} (${reading})`);
-
-  const result = await fetch(
-    `https://tatoeba.org/en/api_v0/search?from=jpn&query=${word}&to=eng&page=${pageNo}`
-  );
-
-  const data = (await result.json()).results;
-  const numSentences = 5;
-
-  const sentences = matchReadingSentences(data, word, reading)
-    .slice(0, numSentences)
-    .map((sentence) => {
-      try {
-        return {
-          japanese: sentence.text,
-          english: sentence.translations[0][0].text,
-        };
-      } catch (error) {
-        return null;
-      }
-    })
-    .filter((sentence) => sentence !== null);
-
-  if (sentences.length === 0) {
-    return getTatoebaSentences(word, reading, pageNo + 1);
-  }
-
-  return sentences;
 };
 
 /*
@@ -195,20 +157,14 @@ const getTatoebaSentences = async (word, reading, pageNo = 1) => {
 */
 const createVocabInfo = async (word, reading) => {
   reading = reading?.replace(/(~|～|〜)/g, "");
-
   const wanikaniResult = await getWanikaniVocab(word, reading);
   if (wanikaniResult) {
     return wanikaniResult;
   } else {
+    console.log("jisho");
     const jishoResult = await getJishoVocab(word, reading);
-    // kana words when i don't provide a reading
-    if (jishoResult.reading.includes(word)) reading = word;
-    // in case the reading given doesn't match anything, default to the first reading from jisho
-    // cuz the reading we want could be the second reading
-    jishoResult.sentences = await getTatoebaSentences(
-      jishoResult.word,
-      jishoResult.reading.includes(reading) ? reading : jishoResult.reading[0]
-    );
+    console.log("tatoeba");
+    jishoResult.sentences = await getTatoebaSentences(jishoResult);
     return jishoResult;
   }
 };
