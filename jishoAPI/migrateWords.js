@@ -6,16 +6,16 @@ const { parse } = require("csv-parse");
 async function getWordData(word, reading, jlptLevel, frequencyRank) {
   const wordData = await createVocabInfo(word, reading);
   return {
-    wordPair: {
+    wordBase: {
       word: word,
       reading: reading,
+      jlptLevel: jlptLevel,
+      frequencyRank: frequencyRank,
     },
-    jlptLevel: jlptLevel,
     readings: wordData.readings,
     meanings: wordData.meanings,
     partsOfSpeech: wordData.partsOfSpeech,
     sentences: wordData.sentences,
-    frequencyRank: frequencyRank,
   };
 }
 
