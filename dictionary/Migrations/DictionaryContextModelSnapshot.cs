@@ -48,7 +48,7 @@ namespace Dictionary.Migrations
                     b.ToTable("Sentences");
                 });
 
-            modelBuilder.Entity("DictionaryAPI.Data.WordData", b =>
+            modelBuilder.Entity("DictionaryAPI.Data.WordBase", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -63,6 +63,27 @@ namespace Dictionary.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Reading")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Word")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WordBases");
+                });
+
+            modelBuilder.Entity("DictionaryAPI.Data.WordData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<string>("Meanings")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -75,35 +96,14 @@ namespace Dictionary.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("WordPairId")
+                    b.Property<int>("WordBaseId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("WordPairId");
+                    b.HasIndex("WordBaseId");
 
                     b.ToTable("Words");
-                });
-
-            modelBuilder.Entity("DictionaryAPI.Data.WordPair", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Reading")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Word")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("WordPairs");
                 });
 
             modelBuilder.Entity("DictionaryAPI.Data.SentenceData", b =>
@@ -115,13 +115,13 @@ namespace Dictionary.Migrations
 
             modelBuilder.Entity("DictionaryAPI.Data.WordData", b =>
                 {
-                    b.HasOne("DictionaryAPI.Data.WordPair", "WordPair")
+                    b.HasOne("DictionaryAPI.Data.WordBase", "WordBase")
                         .WithMany()
-                        .HasForeignKey("WordPairId")
+                        .HasForeignKey("WordBaseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("WordPair");
+                    b.Navigation("WordBase");
                 });
 
             modelBuilder.Entity("DictionaryAPI.Data.WordData", b =>

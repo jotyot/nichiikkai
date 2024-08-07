@@ -161,9 +161,7 @@ const createVocabInfo = async (word, reading) => {
   if (wanikaniResult) {
     return wanikaniResult;
   } else {
-    console.log("jisho");
     const jishoResult = await getJishoVocab(word, reading);
-    console.log("tatoeba");
     jishoResult.sentences = await getTatoebaSentences(jishoResult);
     return jishoResult;
   }

@@ -9,22 +9,22 @@ public class DictionaryService
         _context = context;
     }
 
-    private async Task<WordData?> getWordData(WordPair wordPair)
+    private async Task<WordData?> getWordData(WordBase wordBase)
     {
         var words = await _context.Words
-            .Include(w => w.WordPair)
+            .Include(w => w.WordBase)
             .Include(w => w.Sentences)
             .ToListAsync();
 
         // .FirstOrDefaultAsync(w => w.WordPair.Equals(wordPair)) doesn't work for some reason 
         // I'm guessing the Equals doesn't work when the WordPair is a navigation property
-        return words.Find(w => w.WordPair.Equals(wordPair));
+        return words.Find(w => w.WordBase.Equals(wordBase));
     }
 
 
-    public async Task<WordData> GetWordData(WordPair wordPair)
+    public async Task<WordData> GetWordData(WordBase wordBase)
     {
-        var wordData = await getWordData(wordPair);
+        var wordData = await getWordData(wordBase);
 
         if (wordData == null)
         {
@@ -34,20 +34,14 @@ public class DictionaryService
         return wordData;
     }
 
-    public async Task<List<WordDataLimited>> GetWords(List<string> levels, string jlptOrder = "ascending", string orderBy = "alphabetical", int page = 1)
+    public async Task<List<WordBase>> GetWords(List<string> levels, string jlptOrder = "ascending", string orderBy = "alphabetical", int page = 1)
     {
         const int pageSize = 20;
 
-        var words = _context.Words
-            .Select(w => new WordDataLimited
-            {
-                WordPair = w.WordPair,
-                JLPTLevel = w.JLPTLevel,
-                FrequencyRank = w.FrequencyRank
-            })
+        var words = _context.WordBases
             .Where(w => levels.Contains(w.JLPTLevel));
 
-        IOrderedQueryable<WordDataLimited> orderedWords;
+        IOrderedQueryable<WordBase> orderedWords;
 
         if (jlptOrder == "descending")
         {
@@ -61,7 +55,7 @@ public class DictionaryService
         switch (orderBy)
         {
             case "alphabetical":
-                words = orderedWords.ThenBy(w => w.WordPair.Reading);
+                words = orderedWords.ThenBy(w => w.Reading);
                 break;
             case "frequency":
                 words = orderedWords.ThenBy(w => w.FrequencyRank > 0).ThenBy(w => w.FrequencyRank);
@@ -79,19 +73,19 @@ public class DictionaryService
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteWord(WordPair wordPair)
+    public async Task DeleteWord(WordBase wordBase)
     {
-        var wordData = await getWordData(wordPair);
+        var wordData = await getWordData(wordBase);
 
         if (wordData == null)
         {
             throw new Exception("Word not found");
         }
 
-        var relatedWordPair = await _context.WordPairs
-            .Where(wp => wp.Id == wordData.WordPair.Id)
+        var relatedWordBase = await _context.WordBases
+            .Where(wp => wp.Id == wordData.WordBase.Id)
             .ToListAsync();
-        _context.WordPairs.RemoveRange(relatedWordPair);
+        _context.WordBases.RemoveRange(relatedWordBase);
 
         var relatedSentences = await _context.Sentences
             .Where(s => wordData.Sentences.Select(ws => ws.Id).Contains(s.Id))

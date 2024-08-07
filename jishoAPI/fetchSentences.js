@@ -21,7 +21,6 @@ const matchReadingSentences = (sentences, word, reading) => {
   if (reading === word) return sentences;
 
   [word, reading] = truncateMatchingCharacters(word, reading);
-  console.log(`Truncated to ${word} (${reading})`);
 
   return sentences.filter((sentence) => {
     const transcription = sentence.transcriptions[0].text;
