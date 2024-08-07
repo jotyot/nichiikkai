@@ -77,11 +77,18 @@ const getReadingsFromJishoEntry = (entry, targetWord) => {
 };
 
 const kanaOnlyEntry = (data, word) => {
-  return data.find((entry) =>
-    entry.japanese.some(
-      (japanese) => japanese.reading === word && japanese.word === undefined
-    )
-  );
+  return data.find((entry) => {
+    const kanaWord = entry.japanese.some(
+      (japanese) => japanese.reading === word
+    );
+    const kanaSense = entry.senses.some((sense) =>
+      sense.tags.includes("Usually written using kana alone")
+    );
+    const kanaOnly = entry.japanese.every(
+      (japanese) => japanese.word === undefined
+    );
+    return kanaWord && (kanaOnly || kanaSense);
+  });
 };
 
 const readingMatchEntries = (data, word, reading) => {
@@ -120,10 +127,10 @@ const getJishoVocab = async (word, reading) => {
     if (reading) throw new Error("Reading doesn't match");
     chosenEntry = data[0];
   } else {
-    if (isSuffix)
-      chosenEntry = suffixEntry(readingMatches) ?? readingMatches[0];
-    else chosenEntry = kanaOnlyEntry(readingMatches, word) ?? readingMatches[0];
+    if (isSuffix) chosenEntry = suffixEntry(readingMatches);
+    else chosenEntry = kanaOnlyEntry(readingMatches, word);
   }
+  chosenEntry = chosenEntry ?? readingMatches[0];
 
   const chosenSense = isSuffix
     ? chosenEntry.senses.find(suffixSenseFilter) ?? chosenEntry.senses[0]
