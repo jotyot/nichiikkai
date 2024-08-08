@@ -61,7 +61,10 @@ const getWanikaniVocab = async (word, reading) => {
 const getReadingsFromJishoEntry = (entry, targetWord) => {
   // japanese: [{word: kanji, reading: kana}]
   const readingFilter = (japanese) => {
-    return japanese.word === targetWord || japanese.word === undefined;
+    return (
+      (japanese.reading === targetWord && japanese.word === undefined) ||
+      japanese.word === targetWord
+    );
   };
 
   const readingMatch = entry.japanese
@@ -69,7 +72,7 @@ const getReadingsFromJishoEntry = (entry, targetWord) => {
     .map((japanese) => japanese.reading);
 
   if (readingMatch.length === 0) {
-    targetWord = entry.japanese[0].word ?? entry.slug;
+    targetWord = entry.japanese[0].word;
     return getReadingsFromJishoEntry(entry, targetWord);
   }
 
@@ -92,7 +95,7 @@ const kanaOnlyEntry = (data, word) => {
 };
 
 const readingMatchEntries = (data, word, reading) => {
-  return data.filter((entry) => {
+  return data.filter((entry, i) => {
     const readings = getReadingsFromJishoEntry(entry, word);
     return readings.includes(reading) || readings.includes(word);
   });

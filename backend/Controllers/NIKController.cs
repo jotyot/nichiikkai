@@ -39,19 +39,19 @@ public class NIKController : ControllerBase
         return Ok(userWords);
     }
 
-    [HttpPost("{userName}/words/{word}")]
-    public async Task<ActionResult> AddUserWord([FromRoute] string userName, [FromRoute] string word)
+    [HttpPost("{userName}/words/{word}/{reading}")]
+    public async Task<ActionResult> AddUserWord([FromRoute] string userName, [FromRoute] string word, [FromRoute] string reading)
     {
-        await _service.AddUserWord(userName, word);
+        await _service.AddUserWord(userName, word, reading);
         return Ok();
     }
 
-    [HttpGet("{userName}/words/{word}")]
-    public async Task<ActionResult> GetUserWord([FromRoute] string userName, [FromRoute] string word)
+    [HttpGet("{userName}/words/{word}/{reading}")]
+    public async Task<ActionResult> GetUserWord([FromRoute] string userName, [FromRoute] string word, [FromRoute] string reading)
     {
         try
         {
-            var userWord = await _service.GetUserWord(userName, word);
+            var userWord = await _service.GetUserWord(userName, word, reading);
             return Ok(userWord);
         }
         catch (Exception e)
@@ -61,12 +61,12 @@ public class NIKController : ControllerBase
 
     }
 
-    [HttpPut("{userName}/words/{word}/increment-level")]
-    public async Task<ActionResult> IncrementUserWordLevel([FromRoute] string userName, [FromRoute] string word)
+    [HttpPut("{userName}/words/{word}/{reading}/increment-level")]
+    public async Task<ActionResult> IncrementUserWordLevel([FromRoute] string userName, [FromRoute] string word, [FromRoute] string reading)
     {
         try
         {
-            await _service.IncrementUserWordLevel(userName, word);
+            await _service.IncrementUserWordLevel(userName, word, reading);
             return Ok();
         }
         catch (Exception e)
@@ -75,12 +75,13 @@ public class NIKController : ControllerBase
         }
     }
 
-    [HttpPut("{userName}/words/{word}/decrement-level")]
-    public async Task<ActionResult> DecrementUserWordLevel([FromRoute] string userName, [FromRoute] string word)
+
+    [HttpPut("{userName}/words/{word}/{reading}/decrement-level")]
+    public async Task<ActionResult> DecrementUserWordLevel([FromRoute] string userName, [FromRoute] string word, [FromRoute] string reading)
     {
         try
         {
-            await _service.DecrementUserWordLevel(userName, word);
+            await _service.DecrementUserWordLevel(userName, word, reading);
             return Ok();
         }
         catch (Exception e)
@@ -89,12 +90,13 @@ public class NIKController : ControllerBase
         }
     }
 
-    [HttpPut("{userName}/words/{word}/skip")]
-    public async Task<ActionResult> SkipUserWord([FromRoute] string userName, [FromRoute] string word)
+
+    [HttpPut("{userName}/words/{word}/{reading}/skip")]
+    public async Task<ActionResult> SkipUserWord([FromRoute] string userName, [FromRoute] string word, [FromRoute] string reading)
     {
         try
         {
-            await _service.SkipUserWord(userName, word);
+            await _service.SkipUserWord(userName, word, reading);
             return Ok();
         }
         catch (Exception e)
@@ -103,12 +105,12 @@ public class NIKController : ControllerBase
         }
     }
 
-    [HttpPut("{userName}/words/{word}/synonyms")]
-    public async Task<ActionResult> UpdateUserSynonyms([FromRoute] string userName, [FromRoute] string word, [FromBody] List<string> userSynonyms)
+    [HttpPut("{userName}/words/{word}/{reading}/synonyms")]
+    public async Task<ActionResult> UpdateUserSynonyms([FromRoute] string userName, [FromRoute] string word, [FromRoute] string reading, [FromBody] List<string> userSynonyms)
     {
         try
         {
-            await _service.UpdateUserSynonyms(userName, word, userSynonyms);
+            await _service.UpdateUserSynonyms(userName, word, reading, userSynonyms);
             return Ok();
         }
         catch (Exception e)

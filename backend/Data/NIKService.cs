@@ -25,7 +25,7 @@ public class NIKService
         return user;
     }
 
-    private async Task<UserWord> getUserWord(string userName, WordPair wordPair)
+    private async Task<UserWord> getUserWord(string userName, string word, string reading)
     {
         var user = await _context.NIKUsers
             .Include(u => u.UserWords)
@@ -36,7 +36,7 @@ public class NIKService
             throw new Exception("User not found");
         }
 
-        var userWord = user.UserWords.FirstOrDefault(uw => uw.WordPair.Equals(wordPair));
+        var userWord = user.UserWords.FirstOrDefault(uw => uw.Word == word && uw.Reading == reading);
 
         if (userWord == null)
         {
@@ -74,42 +74,7 @@ public class NIKService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<ICollection<UserWordDTO>> GetUserWords(string userName)
-    {
-        var user = await _context.NIKUsers
-            .FirstOrDefaultAsync(u => u.UserName == userName);
-
-        if (user == null)
-        {
-            throw new Exception("User not found");
-        }
-
-        // Avoid circular reference with userId
-        var userWords = user.UserWords.Select(uw => new UserWordDTO
-        {
-            WordPair = uw.WordPair,
-            Level = uw.Level,
-            NextReviewDay = uw.NextReviewDay,
-            UserSynonyms = uw.UserSynonyms,
-        }).ToList();
-
-        return userWords;
-    }
-
-    public async Task<UserWordDTO> GetUserWord(string userName, WordPair wordPair)
-    {
-        var userWord = await getUserWord(userName, wordPair);
-
-        return new UserWordDTO
-        {
-            WordPair = userWord.WordPair,
-            Level = userWord.Level,
-            NextReviewDay = userWord.NextReviewDay,
-            UserSynonyms = userWord.UserSynonyms,
-        };
-    }
-
-    public async Task AddUserWord(string userName, WordPair wordPair)
+    public async Task<ICollection<UserWord>> GetUserWords(string userName)
     {
         var user = await getUser(userName);
 
@@ -118,16 +83,36 @@ public class NIKService
             throw new Exception("User not found");
         }
 
-        if (user.UserWords.FirstOrDefault(uw => uw.WordPair.Equals(wordPair)) != null)
+        var userWords = user.UserWords.ToList();
+
+        return userWords;
+    }
+
+    public async Task<UserWord> GetUserWord(string userName, string word, string reading)
+    {
+        var userWord = await getUserWord(userName, word, reading);
+
+        return userWord;
+    }
+
+    public async Task AddUserWord(string userName, string word, string reading)
+    {
+        var user = await getUser(userName);
+
+        if (user == null)
+        {
+            throw new Exception("User not found");
+        }
+
+        if (user.UserWords.FirstOrDefault(uw => uw.Word == word && uw.Reading == reading) != null)
         {
             throw new Exception("Word already exists");
         }
 
         var userWord = new UserWord
         {
-            UserId = user.Id,
-            User = user,
-            WordPair = wordPair
+            Word = word,
+            Reading = reading
         };
 
         user.UserWords.Add(userWord);
@@ -135,9 +120,9 @@ public class NIKService
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateUserSynonyms(string userName, WordPair wordPair, List<string> userSynonyms)
+    public async Task UpdateUserSynonyms(string userName, string word, string reading, List<string> userSynonyms)
     {
-        var userWord = await getUserWord(userName, wordPair);
+        var userWord = await getUserWord(userName, word, reading);
 
         userWord.UserSynonyms = userSynonyms;
 
@@ -156,21 +141,21 @@ public class NIKService
         await _context.SaveChangesAsync();
     }
 
-    public async Task IncrementUserWordLevel(string userName, WordPair wordPair)
+    public async Task IncrementUserWordLevel(string userName, string word, string reading)
     {
-        var userWord = await getUserWord(userName, wordPair);
+        var userWord = await getUserWord(userName, word, reading);
         await updateUserWordLevel(userWord, userWord.Level + 1);
     }
 
-    public async Task DecrementUserWordLevel(string userName, WordPair wordPair)
+    public async Task DecrementUserWordLevel(string userName, string word, string reading)
     {
-        var userWord = await getUserWord(userName, wordPair);
+        var userWord = await getUserWord(userName, word, reading);
         await updateUserWordLevel(userWord, userWord.Level - 1);
     }
 
-    public async Task SkipUserWord(string userName, WordPair wordPair)
+    public async Task SkipUserWord(string userName, string word, string reading)
     {
-        var userWord = await getUserWord(userName, wordPair);
+        var userWord = await getUserWord(userName, word, reading);
         await updateUserWordLevel(userWord, 999);
     }
 

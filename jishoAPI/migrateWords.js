@@ -21,17 +21,16 @@ async function getWordData(word, reading, jlptLevel, frequencyRank) {
 
 async function uploadWordData(row) {
   try {
+    const data = await getWordData(...row);
+    if (data.sentences.length === 0)
+      fs.appendFile("noSentences.csv", row + "\n", () => {});
     await axios({
       method: "post",
       url: "http://localhost:5041/Dictionary",
-      data: await getWordData(...row),
+      data: data,
     });
   } catch (error) {
-    fs.appendFile("errorWords.csv", row + "\n", (err) => {
-      if (err) {
-        console.log(err);
-      }
-    });
+    fs.appendFile("errorWords.csv", row + "\n", () => {});
   }
 }
 
