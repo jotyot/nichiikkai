@@ -36,7 +36,7 @@ public class DictionaryService
 
     public async Task<List<WordBase>> GetWords(List<string> levels, string jlptOrder = "ascending", string orderBy = "alphabetical", int page = 1)
     {
-        const int pageSize = 100;
+        const int pageSize = 50;
 
         var words = _context.WordBases
             .Where(w => levels.Contains(w.JLPTLevel));
@@ -58,7 +58,7 @@ public class DictionaryService
                 words = orderedWords.ThenBy(w => w.Reading);
                 break;
             case "frequency":
-                words = orderedWords.ThenBy(w => w.FrequencyRank > 0 ? 0 : 1).ThenByDescending(w => w.FrequencyRank);
+                words = orderedWords.ThenBy(w => w.FrequencyRank > 0 ? 0 : 1).ThenBy(w => w.FrequencyRank);
                 break;
         }
 
