@@ -36,7 +36,7 @@ public class DictionaryService
 
     public async Task<List<WordBase>> GetWords(List<string> levels, string jlptOrder = "ascending", string orderBy = "alphabetical", int page = 1)
     {
-        const int pageSize = 50;
+        const int pageSize = 25;
 
         var words = _context.WordBases
             .Where(w => levels.Contains(w.JLPTLevel));

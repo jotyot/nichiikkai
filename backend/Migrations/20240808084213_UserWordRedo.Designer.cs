@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NIKAPI.Data;
 
@@ -11,9 +12,11 @@ using NIKAPI.Data;
 namespace backend.Migrations
 {
     [DbContext(typeof(NIKDbContext))]
-    partial class NIKDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240808084213_UserWordRedo")]
+    partial class UserWordRedo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
