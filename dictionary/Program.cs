@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 using DictionaryAPI.Data;
+using DictionaryAPI.Authorization;
 
 Env.Load();
 
@@ -14,6 +15,8 @@ builder.Services.AddDbContext<DictionaryContext>(
     options => options.UseSqlServer(DictionaryDbConnectionString)
 );
 builder.Services.AddScoped<DictionaryService>();
+builder.Services.AddSingleton<ApiKeyAuthorizationFilter>();
+builder.Services.AddSingleton<IApiKeyValidator, ApiKeyValidator>();
 builder.Services.AddControllers();
 
 var app = builder.Build();

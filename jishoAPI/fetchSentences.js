@@ -9,6 +9,12 @@ const isVerb = (jishoResult) => {
   );
 };
 
+const sentenceReadingFilter = (reading) => (sentence) => {
+  return sentence.transcriptions?.[0]?.text
+    .replace(/(\[|\||\])/g, "")
+    .includes(reading);
+};
+
 const getTatoebaSentences = async (jishoResult, pageNo = 1) => {
   word = jishoResult.word;
   reading = jishoResult.reading;
@@ -32,6 +38,7 @@ const getTatoebaSentences = async (jishoResult, pageNo = 1) => {
   if (data.length === 0) return [];
 
   const sentences = data
+    .filter(sentenceReadingFilter(reading))
     .slice(0, numSentences)
     .map((sentence) => {
       try {

@@ -2,6 +2,9 @@ const { createVocabInfo } = require("./fetchVocab.js");
 const axios = require("axios");
 const fs = require("fs");
 const { parse } = require("csv-parse");
+require("dotenv").config();
+
+const dictionaryApiKey = process.env.DICTIONARY_API_KEY;
 
 async function getWordData(word, reading, jlptLevel, frequencyRank) {
   const wordData = await createVocabInfo(word, reading);
@@ -27,6 +30,9 @@ async function uploadWordData(row) {
     await axios({
       method: "post",
       url: "http://localhost:5041/Dictionary",
+      headers: {
+        ApiKey: dictionaryApiKey,
+      },
       data: data,
     });
   } catch (error) {

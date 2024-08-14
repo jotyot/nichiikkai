@@ -95,7 +95,7 @@ const kanaOnlyEntry = (data, word) => {
 };
 
 const readingMatchEntries = (data, word, reading) => {
-  return data.filter((entry, i) => {
+  return data.filter((entry) => {
     const readings = getReadingsFromJishoEntry(entry, word);
     return readings.includes(reading) || readings.includes(word);
   });
@@ -109,6 +109,11 @@ const suffixSenseFilter = (sense) => {
     s.includes("suffix") ||
     s.includes("auxiliary verb")
   );
+};
+
+const nonSuffixSenseFilter = (sense) => {
+  const s = sense.parts_of_speech.map((se) => se.toLowerCase());
+  return s.some((part) => !part.includes("suffix"));
 };
 
 const suffixEntry = (data) => {
@@ -135,9 +140,10 @@ const getJishoVocab = async (word, reading) => {
   }
   chosenEntry = chosenEntry ?? readingMatches[0];
 
-  const chosenSense = isSuffix
-    ? chosenEntry.senses.find(suffixSenseFilter) ?? chosenEntry.senses[0]
-    : chosenEntry.senses[0];
+  var chosenSense = isSuffix
+    ? chosenEntry.senses.find(suffixSenseFilter)
+    : chosenEntry.senses.find(nonSuffixSenseFilter);
+  chosenSense = chosenSense ?? chosenEntry.senses[0];
 
   const response = {
     word:

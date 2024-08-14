@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using DictionaryAPI.Data;
+using DictionaryAPI.Authorization;
 
 namespace DictionaryAPI.Controllers;
 
@@ -47,6 +48,7 @@ public class DictionaryController : ControllerBase
         }
     }
 
+    [ApiKey]
     [HttpPost]
     public async Task<ActionResult> AddWord([FromBody] WordData wordData)
     {
@@ -61,6 +63,7 @@ public class DictionaryController : ControllerBase
         }
     }
 
+    [ApiKey]
     [HttpDelete("{word}/{reading}")]
     public async Task<ActionResult> DeleteWord([FromRoute] string word, [FromRoute] string reading)
     {
