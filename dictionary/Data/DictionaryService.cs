@@ -11,14 +11,14 @@ public class DictionaryService
 
     private async Task<WordData?> getWordData(WordBase wordBase)
     {
-        var words = await _context.Words
-            .Include(w => w.WordBase)
-            .Include(w => w.Sentences)
+        var words = await _context.words
+            .Include(w => w.word_base)
+            .Include(w => w.sentences)
             .ToListAsync();
 
         // .FirstOrDefaultAsync(w => w.WordPair.Equals(wordPair)) doesn't work for some reason 
         // I'm guessing the Equals doesn't work when the WordPair is a navigation property
-        return words.Find(w => w.WordBase.Equals(wordBase));
+        return words.Find(w => w.word_base.Equals(wordBase));
     }
 
 
@@ -38,27 +38,27 @@ public class DictionaryService
     {
         const int pageSize = 25;
 
-        var words = _context.WordBases
-            .Where(w => levels.Contains(w.JLPTLevel));
+        var words = _context.word_bases
+            .Where(w => levels.Contains(w.jlpt_level));
 
         IOrderedQueryable<WordBase> orderedWords;
 
         if (jlptOrder == "descending")
         {
-            orderedWords = words.OrderByDescending(w => w.JLPTLevel);
+            orderedWords = words.OrderByDescending(w => w.jlpt_level);
         }
         else
         {
-            orderedWords = words.OrderBy(w => w.JLPTLevel);
+            orderedWords = words.OrderBy(w => w.jlpt_level);
         }
 
         switch (orderBy)
         {
             case "alphabetical":
-                words = orderedWords.ThenBy(w => w.Reading);
+                words = orderedWords.ThenBy(w => w.reading);
                 break;
             case "frequency":
-                words = orderedWords.ThenBy(w => w.FrequencyRank > 0 ? 0 : 1).ThenBy(w => w.FrequencyRank);
+                words = orderedWords.ThenBy(w => w.frequency_rank > 0 ? 0 : 1).ThenBy(w => w.frequency_rank);
                 break;
         }
 
@@ -69,7 +69,7 @@ public class DictionaryService
 
     public async Task AddWordData(WordData wordData)
     {
-        _context.Words.Add(wordData);
+        _context.words.Add(wordData);
         await _context.SaveChangesAsync();
     }
 
@@ -82,17 +82,17 @@ public class DictionaryService
             throw new Exception("Word not found");
         }
 
-        var relatedWordBase = await _context.WordBases
-            .Where(wp => wp.Id == wordData.WordBase.Id)
+        var relatedWordBase = await _context.word_bases
+            .Where(wp => wp.id == wordData.word_base.id)
             .ToListAsync();
-        _context.WordBases.RemoveRange(relatedWordBase);
+        _context.word_bases.RemoveRange(relatedWordBase);
 
-        var relatedSentences = await _context.Sentences
-            .Where(s => wordData.Sentences.Select(ws => ws.Id).Contains(s.Id))
+        var relatedSentences = await _context.sentences
+            .Where(s => wordData.sentences.Select(ws => ws.id).Contains(s.id))
             .ToListAsync();
-        _context.Sentences.RemoveRange(relatedSentences);
+        _context.sentences.RemoveRange(relatedSentences);
 
-        _context.Words.Remove(wordData);
+        _context.words.Remove(wordData);
         await _context.SaveChangesAsync();
     }
 }

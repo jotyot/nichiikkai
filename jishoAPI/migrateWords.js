@@ -36,6 +36,7 @@ async function uploadWordData(row) {
       data: data,
     });
   } catch (error) {
+    console.log(`Error migrating ${row[0]} (${row[1]})`);
     fs.appendFile("errorWords.csv", row + "\n", () => {});
   }
 }

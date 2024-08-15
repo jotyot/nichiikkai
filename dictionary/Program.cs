@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DictionaryContext>(
-    options => options.UseSqlServer(DictionaryDbConnectionString)
+    options => options.UseNpgsql(DictionaryDbConnectionString)
 );
 builder.Services.AddScoped<DictionaryService>();
 builder.Services.AddSingleton<ApiKeyAuthorizationFilter>();
