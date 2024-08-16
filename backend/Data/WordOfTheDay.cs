@@ -15,7 +15,7 @@ public class WordGenerator
         var selectedLevels = await _service.GetSelectedLevels(userName);
 
         var wordPool = selectedLevels.Select(level => _wordList.GetWordsByLevel(level)).SelectMany(x => x).ToList();
-        var learnedWords = (await _service.GetUserWords(userName)).Select(uw => uw.Word).ToList();
+        var learnedWords = (await _service.GetUserWords(userName)).Select(uw => uw.word).ToList();
         wordPool = wordPool.Except(learnedWords).ToList();
 
         // Return most common word if available

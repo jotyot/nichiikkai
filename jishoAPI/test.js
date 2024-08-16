@@ -1,17 +1,32 @@
-const { getWanikaniVocab } = require("./fetchVocab.js");
-const wanikaniAPIkey = process.env.WANIKANI_API_KEY;
+require("dotenv").config();
+const axios = require("axios");
 
-async function main(word) {
-  const response = await fetch(
-    `https://api.wanikani.com/v2/subjects?types=vocabulary&slugs=${word}`,
-    {
-      headers: {
-        Authorization: `Bearer ${wanikaniAPIkey}`,
-      },
-    }
-  );
-  const data = (await response.json()).data;
-  console.log(data);
-}
+const dictionaryApiKey = process.env.DICTIONARY_API_KEY;
 
-main("本");
+// axios({
+//   method: "post",
+//   url: "http://localhost:5041/Dictionary",
+//   headers: {
+//     ApiKey: dictionaryApiKey,
+//   },
+//   data: {
+//     word_base: {
+//       word: "word",
+//       reading: "reading",
+//       jlpt_level: "jlptLevel",
+//       frequency_rank: 0,
+//     },
+//     readings: [],
+//     meanings: [],
+//     parts_of_speech: [],
+//     sentences: [],
+//   },
+// });
+
+axios({
+  method: "delete",
+  url: "http://localhost:5041/Dictionary/筋/すじ",
+  headers: {
+    ApiKey: dictionaryApiKey,
+  },
+});

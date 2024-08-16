@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<NIKDbContext>(
-    options => options.UseSqlServer(UserDbConnectionString)
+    options => options.UseNpgsql(UserDbConnectionString)
 );
 builder.Services.AddIdentityApiEndpoints<NIKUser>().AddEntityFrameworkStores<NIKDbContext>();
 builder.Services.AddAuthorization(options =>

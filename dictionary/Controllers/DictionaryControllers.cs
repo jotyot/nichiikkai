@@ -18,7 +18,7 @@ public class DictionaryController : ControllerBase
     [HttpGet("{word}/{reading}")]
     public async Task<ActionResult<WordData>> GetWordData([FromRoute] string word, [FromRoute] string reading)
     {
-        var wordPair = new WordBase { word = word, reading = reading, jlpt_level = "" };
+        var wordPair = new WordBase { word = word, reading = reading, meaning = "", jlpt_level = "" };
         try
         {
             var result = await _dictionaryService.GetWordData(wordPair);
@@ -67,7 +67,7 @@ public class DictionaryController : ControllerBase
     [HttpDelete("{word}/{reading}")]
     public async Task<ActionResult> DeleteWord([FromRoute] string word, [FromRoute] string reading)
     {
-        var wordPair = new WordBase { word = word, reading = reading, jlpt_level = "" };
+        var wordPair = new WordBase { word = word, reading = reading, meaning = "", jlpt_level = "" };
         try
         {
             await _dictionaryService.DeleteWord(wordPair);

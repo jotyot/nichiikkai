@@ -31,6 +31,7 @@ public class WordBase : IEquatable<WordBase>
     public int id { get; set; }
     public required string word { get; set; }
     public required string reading { get; set; }
+    public required string meaning { get; set; }
     public int frequency_rank { get; set; } // 0 means not in the top 20,000
     public required string jlpt_level { get; set; }
 

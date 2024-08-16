@@ -6,18 +6,19 @@ require("dotenv").config();
 
 const dictionaryApiKey = process.env.DICTIONARY_API_KEY;
 
-async function getWordData(word, reading, jlptLevel, frequencyRank) {
+async function getWordData(word, reading, jlptLevel, frequencyRank, meaning) {
   const wordData = await createVocabInfo(word, reading);
   return {
-    wordBase: {
+    word_base: {
       word: word,
       reading: reading,
-      jlptLevel: jlptLevel,
-      frequencyRank: frequencyRank,
+      meaning: meaning,
+      jlpt_level: jlptLevel,
+      frequency_rank: frequencyRank,
     },
     readings: wordData.readings,
     meanings: wordData.meanings,
-    partsOfSpeech: wordData.partsOfSpeech,
+    parts_of_speech: wordData.partsOfSpeech,
     sentences: wordData.sentences,
   };
 }
