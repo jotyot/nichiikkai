@@ -55,6 +55,8 @@ public class WordBase : IEquatable<WordBase>
 public class SentenceData
 {
     public int id { get; set; }
+    // i know the naming isn't consistent but i'm just trying to get this to work with the established database
+    public int WordDataid { get; set; }
     public required string japanese { get; set; }
     public required string english { get; set; }
 }

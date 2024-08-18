@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Dictionary.Migrations
 {
     /// <inheritdoc />
-    public partial class Postgre : Migration
+    public partial class WordDataIds : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,6 +20,7 @@ namespace Dictionary.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     word = table.Column<string>(type: "text", nullable: false),
                     reading = table.Column<string>(type: "text", nullable: false),
+                    meaning = table.Column<string>(type: "text", nullable: false),
                     frequency_rank = table.Column<int>(type: "integer", nullable: false),
                     jlpt_level = table.Column<string>(type: "text", nullable: false)
                 },
@@ -56,9 +57,9 @@ namespace Dictionary.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    WordDataid = table.Column<int>(type: "integer", nullable: false),
                     japanese = table.Column<string>(type: "text", nullable: false),
-                    english = table.Column<string>(type: "text", nullable: false),
-                    WordDataid = table.Column<int>(type: "integer", nullable: true)
+                    english = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,7 +68,8 @@ namespace Dictionary.Migrations
                         name: "FK_sentences_words_WordDataid",
                         column: x => x.WordDataid,
                         principalTable: "words",
-                        principalColumn: "id");
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

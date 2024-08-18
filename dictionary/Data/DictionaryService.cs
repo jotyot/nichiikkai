@@ -9,11 +9,10 @@ public class DictionaryService
         _context = context;
     }
 
-    private async Task<WordData?> getWordData(WordBase wordBase)
+    private async Task<WordData?> getWordBase(WordBase wordBase)
     {
         var words = await _context.words
             .Include(w => w.word_base)
-            .Include(w => w.sentences)
             .ToListAsync();
 
         // .FirstOrDefaultAsync(w => w.WordPair.Equals(wordPair)) doesn't work for some reason 
@@ -24,12 +23,17 @@ public class DictionaryService
 
     public async Task<WordData> GetWordData(WordBase wordBase)
     {
-        var wordData = await getWordData(wordBase);
+        var wordData = await getWordBase(wordBase);
 
         if (wordData == null)
         {
             throw new Exception("Word not found");
         }
+
+        // im guessing the sentences are being loaded because of this
+        await _context.sentences
+            .Where(s => s.WordDataid == wordData.id)
+            .ToListAsync();
 
         return wordData;
     }
@@ -75,7 +79,7 @@ public class DictionaryService
 
     public async Task DeleteWord(WordBase wordBase)
     {
-        var wordData = await getWordData(wordBase);
+        var wordData = await getWordBase(wordBase);
 
         if (wordData == null)
         {
