@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using DotNetEnv;
 
 namespace DictionaryAPI.Authorization;
 public class ApiKeyAttribute : ServiceFilterAttribute
@@ -39,15 +38,15 @@ public class ApiKeyAuthorizationFilter : IAuthorizationFilter
 
 public class ApiKeyValidator : IApiKeyValidator
 {
-    private string _localApiKey;
+    private string? _apiKey;
     public ApiKeyValidator()
     {
-        Env.Load();
-        _localApiKey = Env.GetString("DICTIONARY_API_KEY");
+        _apiKey = Environment.GetEnvironmentVariable("DICTIONARY_API_KEY");
     }
+
     public bool IsValid(string apiKey)
     {
-        return _localApiKey == apiKey;
+        return _apiKey == apiKey;
     }
 }
 

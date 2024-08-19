@@ -13,8 +13,9 @@ const dictionaryApiKey = process.env.DICTIONARY_API_KEY;
 //     word_base: {
 //       word: "word",
 //       reading: "reading",
-//       jlpt_level: "jlptLevel",
-//       frequency_rank: 0,
+//       meaning: "meaning",
+//       jlpt_level: "N1",
+//       frequency_rank: 1,
 //     },
 //     readings: [],
 //     meanings: [],
@@ -23,10 +24,10 @@ const dictionaryApiKey = process.env.DICTIONARY_API_KEY;
 //   },
 // });
 
-axios({
-  method: "delete",
-  url: "http://localhost:5041/Dictionary/筋/すじ",
-  headers: {
-    ApiKey: dictionaryApiKey,
-  },
-});
+// axios({
+//   method: "delete",
+//   url: "http://localhost:5041/Dictionary/word/reading",
+//   headers: {
+//     ApiKey: dictionaryApiKey,
+//   },
+// });

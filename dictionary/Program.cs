@@ -1,13 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using DotNetEnv;
 using DictionaryAPI.Data;
 using DictionaryAPI.Authorization;
 
-Env.Load();
-
-var DictionaryDbConnectionString = Env.GetString("DICTIONARYDB_CONNECTION_STRING");
-
 var builder = WebApplication.CreateBuilder(args);
+
+var DictionaryDbConnectionString = Environment.GetEnvironmentVariable("DICTIONARYDB_CONNECTION_STRING");
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
