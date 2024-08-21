@@ -13,4 +13,5 @@ WORKDIR /app
 COPY --from=build /app ./
 ENTRYPOINT ["dotnet", "Dictionary.dll"]
 
-# docker run --rm -it -p 5000:8080 dictionary_service
+# docker build -t us-west1-docker.pkg.dev/nichiikkai/docker/dictionary-image .
+# docker run --env-file .env --rm -it -p 5000:8080 us-west1-docker.pkg.dev/nichiikkai/docker/dictionary-image 

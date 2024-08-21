@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using NIKAPI.Data;
+using NIKAPI.Authorization;
 
 namespace NIKAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Authorize(Policy = "SameUser")]
+[SameUser]
 public class NIKController : ControllerBase
 {
 

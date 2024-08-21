@@ -9,23 +9,27 @@ public class NIKDbContext : IdentityDbContext
     public NIKDbContext(DbContextOptions options) : base(options)
     {
     }
-
+    // i guess the tables have to be lowercase?? am i making something up
     public DbSet<NIKUser> nik_users { get; set; } = null!;
     public DbSet<UserWord> user_words { get; set; } = null!;
 }
 
 public class NIKUser : IdentityUser
 {
-    public List<string> selected_levels { get; set; } = new List<string>(["N3"]);
-    public ICollection<UserWord> user_words { get; set; } = new List<UserWord>();
+    public List<string> SelectedLevels { get; set; } = new List<string>(["N3"]);
 }
 
 public class UserWord
 {
-    public int id { get; set; }
-    public required string word { get; set; }
-    public required string reading { get; set; }
-    public int level { get; set; } = 1;
-    public DateOnly next_review_day { get; set; } = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
-    public List<string> user_synonyms { get; set; } = new List<string>();
+    public int Id { get; set; }
+    public required string UserId { get; set; }
+    public required string Word { get; set; }
+    public required string Reading { get; set; }
+    public int Level { get; set; } = 1;
+    public DateOnly NextReviewDay { get; set; } = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
+    public List<string> UserSynonyms { get; set; } = new List<string>();
+    public bool WordPairMatch(string word, string reading)
+    {
+        return Word == word && Reading == reading;
+    }
 }

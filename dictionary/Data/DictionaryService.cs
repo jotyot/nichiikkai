@@ -40,7 +40,7 @@ public class DictionaryService
 
     public async Task<List<WordBase>> GetWords(List<string> levels, string jlptOrder = "ascending", string orderBy = "alphabetical", int page = 1)
     {
-        const int pageSize = 100;
+        const int pageSize = 500;
 
         var words = _context.word_bases
             .Where(w => levels.Contains(w.jlpt_level));
@@ -92,7 +92,7 @@ public class DictionaryService
         _context.word_bases.RemoveRange(relatedWordBase);
 
         var relatedSentences = await _context.sentences
-            .Where(s => wordData.sentences.Select(ws => ws.id).Contains(s.id))
+            .Where(s => s.WordDataid == wordData.id)
             .ToListAsync();
         _context.sentences.RemoveRange(relatedSentences);
 

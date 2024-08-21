@@ -22,8 +22,6 @@ public class WordData
     public List<string> readings { get; set; } = new List<string>();
     public List<string> meanings { get; set; } = new List<string>();
     public List<string> parts_of_speech { get; set; } = new List<string>();
-    public List<SentenceData> sentences { get; set; } = new List<SentenceData>();
-
 }
 
 public class WordBase : IEquatable<WordBase>

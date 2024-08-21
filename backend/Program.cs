@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NIKAPI.Data;
+using NIKAPI.Authorization;
 using DotNetEnv;
 
 Env.Load();
@@ -16,17 +17,7 @@ builder.Services.AddDbContext<NIKDbContext>(
     options => options.UseNpgsql(UserDbConnectionString)
 );
 builder.Services.AddIdentityApiEndpoints<NIKUser>().AddEntityFrameworkStores<NIKDbContext>();
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("SameUser", policy =>
-        policy.RequireAssertion(context =>
-        {
-            var userId = context.User.Identity?.Name;
-            var routeUserId = new HttpContextAccessor().HttpContext?.Request.RouteValues["userName"]?.ToString();
-            return userId == routeUserId;
-        })
-    );
-});
+builder.Services.AddSingleton<SameUserAuthorizationFilter>();
 builder.Services.AddScoped<NIKService>();
 builder.Services.AddControllers();
 
