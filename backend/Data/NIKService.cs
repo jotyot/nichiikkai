@@ -157,16 +157,16 @@ public class NIKService
 
         var user = await getUser(userName);
         var learnedWords = (await GetUserWords(userName))
-            .Select(uw => new WordPair { Word = uw.Word, Reading = uw.Reading })
+            .Select(uw => new WordPair { word = uw.Word, reading = uw.Reading })
             .ToList();
 
-        var newWord = wordPool.FirstOrDefault(wp => !learnedWords.Contains(wp));
+        var newWord = wordPool.FirstOrDefault(wp => !learnedWords.Any(lwp => lwp.word == wp.word && lwp.reading == wp.reading));
         return newWord;
     }
 }
 
 public class WordPair
 {
-    public required string Word { get; set; }
-    public required string Reading { get; set; }
+    public required string word { get; set; }
+    public required string reading { get; set; }
 }
