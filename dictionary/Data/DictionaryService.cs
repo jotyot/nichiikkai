@@ -11,13 +11,12 @@ public class DictionaryService
 
     private async Task<WordData?> getWordBase(WordBase wordBase)
     {
-        var words = await _context.words
-            .Include(w => w.word_base)
-            .ToListAsync();
+        var word = await _context.words
+            .Include(w => w.WordBase)
+            .Where(w => w.WordBase.Word == wordBase.Word && w.WordBase.Reading == wordBase.Reading)
+            .FirstOrDefaultAsync();
 
-        // .FirstOrDefaultAsync(w => w.WordPair.Equals(wordPair)) doesn't work for some reason 
-        // I'm guessing the Equals doesn't work when the WordPair is a navigation property
-        return words.Find(w => w.word_base.Equals(wordBase));
+        return word;
     }
 
 
@@ -32,7 +31,7 @@ public class DictionaryService
 
         // im guessing the sentences are being loaded because of this
         await _context.sentences
-            .Where(s => s.WordDataid == wordData.id)
+            .Where(s => s.WordDataid == wordData.Id)
             .ToListAsync();
 
         return wordData;
@@ -43,28 +42,27 @@ public class DictionaryService
         const int pageSize = 500;
 
         var words = _context.word_bases
-            .Where(w => levels.Contains(w.jlpt_level));
+            .Where(w => levels.Contains(w.JlptLevel));
+
+        IOrderedQueryable<WordBase> orderedWords;
 
         switch (jlptOrder)
         {
-            case "ascending":
-                words = words.OrderBy(w => w.jlpt_level);
-                words = secondOrdering(orderBy, words);
-                break;
             case "descending":
-                words = words.OrderByDescending(w => w.jlpt_level);
-                words = secondOrdering(orderBy, words);
+                orderedWords = words.OrderByDescending(w => w.JlptLevel);
                 break;
             default:
-                switch (orderBy)
-                {
-                    case "alphabetical":
-                        words = words.OrderBy(w => w.reading);
-                        break;
-                    case "frequency":
-                        words = words.OrderBy(w => w.frequency_rank > 0 ? 0 : 1).ThenBy(w => w.frequency_rank);
-                        break;
-                }
+                orderedWords = words.OrderBy(w => w.JlptLevel);
+                break;
+        }
+
+        switch (orderBy)
+        {
+            case "frequency":
+                words = orderedWords.ThenBy(w => w.FrequencyRank > 0 ? 0 : 1).ThenBy(w => w.FrequencyRank);
+                break;
+            default:
+                words = orderedWords.ThenBy(w => w.Reading);
                 break;
         }
 
@@ -72,22 +70,6 @@ public class DictionaryService
         var result = await words.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
         return result;
-
-        // this works but i hate how it looks
-        static IQueryable<WordBase> secondOrdering(string orderBy, IQueryable<WordBase> words)
-        {
-            switch (orderBy)
-            {
-                case "alphabetical":
-                    words = ((IOrderedQueryable<WordBase>)words).ThenBy(w => w.reading);
-                    break;
-                case "frequency":
-                    words = ((IOrderedQueryable<WordBase>)words).ThenBy(w => w.frequency_rank > 0 ? 0 : 1).ThenBy(w => w.frequency_rank);
-                    break;
-            }
-
-            return words;
-        }
     }
 
     public async Task AddWordData(WordData wordData)
@@ -106,16 +88,41 @@ public class DictionaryService
         }
 
         var relatedWordBase = await _context.word_bases
-            .Where(wp => wp.id == wordData.word_base.id)
+            .Where(wp => wp.Id == wordData.WordBase.Id)
             .ToListAsync();
         _context.word_bases.RemoveRange(relatedWordBase);
 
         var relatedSentences = await _context.sentences
-            .Where(s => s.WordDataid == wordData.id)
+            .Where(s => s.WordDataid == wordData.Id)
             .ToListAsync();
         _context.sentences.RemoveRange(relatedSentences);
 
         _context.words.Remove(wordData);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<WordBase> GenerateWord(List<string> levels, List<WordPair> wordPairs)
+    {
+        var word = await _context.word_bases
+            .Where(w =>
+                levels.Contains(w.JlptLevel) &&
+                !wordPairs.Select(wp => wp.word + wp.reading).Contains(w.Word + w.Reading)
+            )
+            .OrderBy(w => w.FrequencyRank > 0 ? 0 : 1)
+            .ThenBy(w => w.FrequencyRank)
+            .FirstOrDefaultAsync();
+
+        if (word == null)
+        {
+            throw new Exception("No word found");
+        }
+
+        return word;
+    }
+}
+
+public class WordPair
+{
+    public required string word { get; set; }
+    public required string reading { get; set; }
 }

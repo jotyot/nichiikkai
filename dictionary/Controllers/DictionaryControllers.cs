@@ -18,7 +18,7 @@ public class DictionaryController : ControllerBase
     [HttpGet("{word}/{reading}")]
     public async Task<ActionResult<WordData>> GetWordData([FromRoute] string word, [FromRoute] string reading)
     {
-        var wordPair = new WordBase { word = word, reading = reading, meaning = "", jlpt_level = "" };
+        var wordPair = new WordBase { Word = word, Reading = reading, Meaning = "", JlptLevel = "" };
         try
         {
             var result = await _dictionaryService.GetWordData(wordPair);
@@ -67,11 +67,32 @@ public class DictionaryController : ControllerBase
     [HttpDelete("{word}/{reading}")]
     public async Task<ActionResult> DeleteWord([FromRoute] string word, [FromRoute] string reading)
     {
-        var wordPair = new WordBase { word = word, reading = reading, meaning = "", jlpt_level = "" };
+        var wordPair = new WordBase { Word = word, Reading = reading, Meaning = "", JlptLevel = "" };
         try
         {
             await _dictionaryService.DeleteWord(wordPair);
             return Ok();
+        }
+        catch (Exception e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
+    /*
+        Generates a word that isn't in the list of word pairs sent by the client
+    */
+    [HttpGet("generate-word")]
+    public async Task<ActionResult<WordBase>> GenerateWord([FromQuery] List<string> levels, [FromBody] List<WordPair> wordPairs)
+    {
+        try
+        {
+            if (levels.Count == 0)
+            {
+                levels = new List<string> { "N5", "N4", "N3", "N2", "N1" };
+            }
+            var result = await _dictionaryService.GenerateWord(levels, wordPairs);
+            return result;
         }
         catch (Exception e)
         {

@@ -4,7 +4,7 @@ WORKDIR /source
 
 # copy everything else and build app
 COPY . .
-WORKDIR /source/
+WORKDIR /source
 RUN dotnet publish -c release -o /app 
 
 # final stage/image
@@ -14,4 +14,4 @@ COPY --from=build /app ./
 ENTRYPOINT ["dotnet", "Dictionary.dll"]
 
 # docker build -t us-west1-docker.pkg.dev/nichiikkai/docker/dictionary-image .
-# docker run --env-file .env --rm -it -p 5000:8080 us-west1-docker.pkg.dev/nichiikkai/docker/dictionary-image 
+# docker run --env-file .env --rm -it -p 5001:8080 us-west1-docker.pkg.dev/nichiikkai/docker/dictionary-image 

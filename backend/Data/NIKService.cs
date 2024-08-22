@@ -6,13 +6,11 @@ public class NIKService
 {
     private readonly NIKDbContext _context;
     private readonly IReviewIntervals _reviewIntervals;
-    private readonly IWordFetcher _wordGenerator;
 
-    public NIKService(NIKDbContext context, IReviewIntervals reviewIntervals, IWordFetcher wordGenerator)
+    public NIKService(NIKDbContext context, IReviewIntervals reviewIntervals)
     {
         _context = context;
         _reviewIntervals = reviewIntervals;
-        _wordGenerator = wordGenerator;
     }
 
 
@@ -148,20 +146,6 @@ public class NIKService
     {
         var userWord = await getUserWord(userName, word, reading);
         await updateUserWordLevel(userWord, 999);
-    }
-
-    public async Task<WordPair?> GenerateWord(string userName)
-    {
-        List<string> selectedLevels = await GetSelectedLevels(userName);
-        var wordPool = await _wordGenerator.FetchWords(selectedLevels);
-
-        var user = await getUser(userName);
-        var learnedWords = (await GetUserWords(userName))
-            .Select(uw => new WordPair { word = uw.Word, reading = uw.Reading })
-            .ToList();
-
-        var newWord = wordPool.FirstOrDefault(wp => !learnedWords.Any(lwp => lwp.word == wp.word && lwp.reading == wp.reading));
-        return newWord;
     }
 }
 

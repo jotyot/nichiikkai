@@ -17,44 +17,29 @@ public class DictionaryContext : DbContext
 
 public class WordData
 {
-    public int id { get; set; }
-    public required WordBase word_base { get; set; }
-    public List<string> readings { get; set; } = new List<string>();
-    public List<string> meanings { get; set; } = new List<string>();
-    public List<string> parts_of_speech { get; set; } = new List<string>();
+    public int Id { get; set; }
+    public required WordBase WordBase { get; set; }
+    public List<string> Readings { get; set; } = new List<string>();
+    public List<string> Meanings { get; set; } = new List<string>();
+    public List<string> PartsOfSpeech { get; set; } = new List<string>();
+    public List<SentenceData> Sentences { get; set; } = new List<SentenceData>();
 }
 
-public class WordBase : IEquatable<WordBase>
+public class WordBase
 {
-    public int id { get; set; }
-    public required string word { get; set; }
-    public required string reading { get; set; }
-    public required string meaning { get; set; }
-    public int frequency_rank { get; set; } // 0 means not in the top 20,000
-    public required string jlpt_level { get; set; }
-
-    public override bool Equals(object? obj) => Equals(obj as WordBase);
-    public bool Equals(WordBase? other)
-    {
-        if (other == null)
-        {
-            return false;
-        }
-
-        return word == other.word && reading == other.reading;
-    }
-
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(word, reading);
-    }
+    public int Id { get; set; }
+    public required string Word { get; set; }
+    public required string Reading { get; set; }
+    public required string Meaning { get; set; }
+    public int FrequencyRank { get; set; } // 0 means not in the top 20,000
+    public required string JlptLevel { get; set; }
 }
 
 public class SentenceData
 {
-    public int id { get; set; }
+    public int Id { get; set; }
     // i know the naming isn't consistent but i'm just trying to get this to work with the established database
     public int WordDataid { get; set; }
-    public required string japanese { get; set; }
-    public required string english { get; set; }
+    public required string Japanese { get; set; }
+    public required string English { get; set; }
 }
