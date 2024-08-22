@@ -45,30 +45,49 @@ public class DictionaryService
         var words = _context.word_bases
             .Where(w => levels.Contains(w.jlpt_level));
 
-        IOrderedQueryable<WordBase> orderedWords;
-
-        if (jlptOrder == "descending")
+        switch (jlptOrder)
         {
-            orderedWords = words.OrderByDescending(w => w.jlpt_level);
-        }
-        else
-        {
-            orderedWords = words.OrderBy(w => w.jlpt_level);
-        }
-
-        switch (orderBy)
-        {
-            case "alphabetical":
-                words = orderedWords.ThenBy(w => w.reading);
+            case "ascending":
+                words = words.OrderBy(w => w.jlpt_level);
+                words = secondOrdering(orderBy, words);
                 break;
-            case "frequency":
-                words = orderedWords.ThenBy(w => w.frequency_rank > 0 ? 0 : 1).ThenBy(w => w.frequency_rank);
+            case "descending":
+                words = words.OrderByDescending(w => w.jlpt_level);
+                words = secondOrdering(orderBy, words);
+                break;
+            default:
+                switch (orderBy)
+                {
+                    case "alphabetical":
+                        words = words.OrderBy(w => w.reading);
+                        break;
+                    case "frequency":
+                        words = words.OrderBy(w => w.frequency_rank > 0 ? 0 : 1).ThenBy(w => w.frequency_rank);
+                        break;
+                }
                 break;
         }
+
 
         var result = await words.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
         return result;
+
+        // this works but i hate how it looks
+        static IQueryable<WordBase> secondOrdering(string orderBy, IQueryable<WordBase> words)
+        {
+            switch (orderBy)
+            {
+                case "alphabetical":
+                    words = ((IOrderedQueryable<WordBase>)words).ThenBy(w => w.reading);
+                    break;
+                case "frequency":
+                    words = ((IOrderedQueryable<WordBase>)words).ThenBy(w => w.frequency_rank > 0 ? 0 : 1).ThenBy(w => w.frequency_rank);
+                    break;
+            }
+
+            return words;
+        }
     }
 
     public async Task AddWordData(WordData wordData)

@@ -2,6 +2,7 @@ namespace NIKAPI.Data;
 
 public interface IReviewIntervals
 {
+    // a function to bind the level to the closest interval to store in the database
     public int BindLevel(int level);
     public DateOnly GetNextReviewDay(int level);
 }

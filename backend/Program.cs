@@ -18,6 +18,8 @@ builder.Services.AddDbContext<NIKDbContext>(
 );
 builder.Services.AddIdentityApiEndpoints<NIKUser>().AddEntityFrameworkStores<NIKDbContext>();
 builder.Services.AddSingleton<SameUserAuthorizationFilter>();
+builder.Services.AddSingleton<IReviewIntervals, DefaultReviewIntervals>();
+builder.Services.AddScoped<IWordFetcher, DefaultWordFetcher>();
 builder.Services.AddScoped<NIKService>();
 builder.Services.AddControllers();
 

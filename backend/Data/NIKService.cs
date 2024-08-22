@@ -5,11 +5,16 @@ namespace NIKAPI.Data;
 public class NIKService
 {
     private readonly NIKDbContext _context;
+    private readonly IReviewIntervals _reviewIntervals;
+    private readonly IWordFetcher _wordGenerator;
 
-    public NIKService(NIKDbContext context)
+    public NIKService(NIKDbContext context, IReviewIntervals reviewIntervals, IWordFetcher wordGenerator)
     {
         _context = context;
+        _reviewIntervals = reviewIntervals;
+        _wordGenerator = wordGenerator;
     }
+
 
     private async Task<NIKUser> getUser(string userName)
     {
@@ -29,7 +34,7 @@ public class NIKService
         var user = await getUser(userName);
 
         var userWord = await _context.user_words
-            .FirstOrDefaultAsync(uw => uw.UserId == user.Id && uw.WordPairMatch(word, reading));
+            .FirstOrDefaultAsync(uw => uw.UserId == user.Id && uw.Word == word && uw.Reading == reading);
 
         if (userWord == null)
         {
@@ -119,12 +124,10 @@ public class NIKService
 
     private async Task updateUserWordLevel(UserWord userWord, int level)
     {
-        IReviewIntervals ReviewIntervals = new DefaultReviewIntervals();
-
-        level = ReviewIntervals.BindLevel(level);
+        level = _reviewIntervals.BindLevel(level);
 
         userWord.Level = level;
-        userWord.NextReviewDay = ReviewIntervals.GetNextReviewDay(level);
+        userWord.NextReviewDay = _reviewIntervals.GetNextReviewDay(level);
 
         await _context.SaveChangesAsync();
     }
@@ -147,9 +150,18 @@ public class NIKService
         await updateUserWordLevel(userWord, 999);
     }
 
-    public Task<WordPair> GenerateWord(string userName)
+    public async Task<WordPair?> GenerateWord(string userName)
     {
-        throw new NotImplementedException();
+        List<string> selectedLevels = await GetSelectedLevels(userName);
+        var wordPool = await _wordGenerator.FetchWords(selectedLevels);
+
+        var user = await getUser(userName);
+        var learnedWords = (await GetUserWords(userName))
+            .Select(uw => new WordPair { Word = uw.Word, Reading = uw.Reading })
+            .ToList();
+
+        var newWord = wordPool.FirstOrDefault(wp => !learnedWords.Contains(wp));
+        return newWord;
     }
 }
 

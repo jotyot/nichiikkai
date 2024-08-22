@@ -123,8 +123,8 @@ public class NIKController : ControllerBase
     [HttpGet("{userName}/generate-word")]
     public async Task<ActionResult> GenerateWord([FromRoute] string userName)
     {
-        var wordOfTheDay = await _service.GenerateWord(userName);
-        return Ok(wordOfTheDay);
+        var newWord = await _service.GenerateWord(userName);
+        return Ok(newWord);
     }
 
 }
