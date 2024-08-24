@@ -16,18 +16,20 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<NIKDbContext>(
     options => options.UseNpgsql(UserDbConnectionString)
 );
-builder.Services.AddIdentityApiEndpoints<NIKUser>().AddEntityFrameworkStores<NIKDbContext>();
+
 builder.Services.AddSingleton<SameUserAuthorizationFilter>();
 builder.Services.AddSingleton<IReviewIntervals, DefaultReviewIntervals>();
 builder.Services.AddScoped<NIKService>();
-builder.Services.AddControllers();
 
+builder.Services.AddIdentityApiEndpoints<NIKUser>()
+    .AddEntityFrameworkStores<NIKDbContext>();
 builder.Services.AddAuthentication()
-   .AddGoogle(options =>
-   {
-       options.ClientId = Env.GetString("ClientId");
-       options.ClientSecret = Env.GetString("ClientSecret");
-   });
+    .AddGoogle(options =>
+        {
+            options.ClientId = Env.GetString("GOOGLE_CLIENT_ID");
+            options.ClientSecret = Env.GetString("GOOGLE_CLIENT_SECRET");
+        });
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -42,6 +44,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGroup("/identity").MapIdentityApi<NIKUser>();
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapDefaultControllerRoute();
+app.MapGroup("identity").MapIdentityApi<NIKUser>();
 
 app.Run();

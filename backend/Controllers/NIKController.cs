@@ -106,6 +106,20 @@ public class NIKController : ControllerBase
         }
     }
 
+    [HttpPut("{userName}/words/{word}/{reading}/unskip")]
+    public async Task<ActionResult> UnskipUserWord([FromRoute] string userName, [FromRoute] string word, [FromRoute] string reading)
+    {
+        try
+        {
+            await _service.UnskipUserWord(userName, word, reading);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return NotFound(e.Message);
+        }
+    }
+
     [HttpPut("{userName}/words/{word}/{reading}/synonyms")]
     public async Task<ActionResult> UpdateUserSynonyms([FromRoute] string userName, [FromRoute] string word, [FromRoute] string reading, [FromBody] List<string> userSynonyms)
     {
@@ -119,12 +133,4 @@ public class NIKController : ControllerBase
             return NotFound(e.Message);
         }
     }
-
-    [HttpGet("{userName}/generate-word")]
-    public async Task<ActionResult> GenerateWord([FromRoute] string userName)
-    {
-        var newWord = await _service.GenerateWord(userName);
-        return Ok(newWord);
-    }
-
 }

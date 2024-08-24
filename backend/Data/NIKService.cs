@@ -145,7 +145,19 @@ public class NIKService
     public async Task SkipUserWord(string userName, string word, string reading)
     {
         var userWord = await getUserWord(userName, word, reading);
-        await updateUserWordLevel(userWord, 999);
+        userWord.Skipped = true;
+        userWord.NextReviewDay = _reviewIntervals.GetNextReviewDay(9999);
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UnskipUserWord(string userName, string word, string reading)
+    {
+        var userWord = await getUserWord(userName, word, reading);
+        userWord.Skipped = false;
+        userWord.NextReviewDay = _reviewIntervals.GetNextReviewDay(userWord.Level);
+
+        await _context.SaveChangesAsync();
     }
 }
 

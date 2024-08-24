@@ -28,4 +28,5 @@ public class UserWord
     public int Level { get; set; } = 1;
     public DateOnly NextReviewDay { get; set; } = DateOnly.FromDateTime(DateTime.Now.AddDays(1));
     public List<string> UserSynonyms { get; set; } = new List<string>();
+    public bool Skipped { get; set; } = false;
 }
