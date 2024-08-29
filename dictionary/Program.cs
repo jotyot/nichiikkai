@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var DictionaryDbConnectionString = Environment.GetEnvironmentVariable("DICTIONARYDB_CONNECTION_STRING");
 
+builder.Services.AddCors();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DictionaryContext>(
@@ -27,5 +28,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true) // allow any origin
+);
 
 app.Run();
