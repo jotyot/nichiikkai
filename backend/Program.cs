@@ -1,11 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using NIKAPI.Data;
-using DotNetEnv;
-using Microsoft.AspNetCore.Authentication.Google;
+// using Microsoft.AspNetCore.Authentication.Google;
 
-Env.Load();
-
-var UserDbConnectionString = Env.GetString("USERDB_CONNECTION_STRING");
+var UserDbConnectionString = Environment.GetEnvironmentVariable("USERDB_CONNECTION_STRING");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,8 +26,8 @@ builder.Services.AddAuthentication();
 // )
 // .AddGoogle(options =>
 //     {
-//         options.ClientId = Env.GetString("GOOGLE_CLIENT_ID");
-//         options.ClientSecret = Env.GetString("GOOGLE_CLIENT_SECRET");
+//         options.ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
+//         options.ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET");
 //     });
 
 builder.Services.AddIdentityApiEndpoints<NIKUser>()
