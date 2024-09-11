@@ -7,19 +7,18 @@ import { setLoginInfo } from "@/storage/Storage";
 import { NamedField } from "@/components/NamedField";
 import { WideButton } from "@/components/WideButton";
 
-export default function Register() {
+export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleRegister = async () => {
+  const handleLogin = async () => {
     // await setLoginInfo(username, password);
   };
 
   return (
     <ThemedView style={styles.container}>
       <ThemedText style={styles.text} type="title">
-        Sign up
+        Sign in
       </ThemedText>
       <NamedField
         name="Email"
@@ -31,12 +30,7 @@ export default function Register() {
         fieldContent={password}
         setFieldContent={setPassword}
       />
-      <NamedField
-        name="Confirm Password"
-        fieldContent={confirmPassword}
-        setFieldContent={setConfirmPassword}
-      />
-      <WideButton text="Sign up" onPress={handleRegister} />
+      <WideButton text="Sign in" onPress={handleLogin} />
     </ThemedView>
   );
 }
