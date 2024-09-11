@@ -37,6 +37,12 @@ export default function Register() {
         setFieldContent={setConfirmPassword}
       />
       <WideButton text="Sign up" onPress={handleRegister} />
+      <ThemedText>
+        Already have an account?{" "}
+        <Link href="/login">
+          <ThemedText style={{ color: "blue" }}>Sign in</ThemedText>
+        </Link>
+      </ThemedText>
     </ThemedView>
   );
 }

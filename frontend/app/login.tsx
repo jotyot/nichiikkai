@@ -31,6 +31,12 @@ export default function Login() {
         setFieldContent={setPassword}
       />
       <WideButton text="Sign in" onPress={handleLogin} />
+      <ThemedText>
+        Don't have an account?{" "}
+        <Link href="/">
+          <ThemedText style={{ color: "blue" }}>Sign up</ThemedText>
+        </Link>
+      </ThemedText>
     </ThemedView>
   );
 }
