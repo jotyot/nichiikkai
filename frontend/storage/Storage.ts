@@ -19,14 +19,14 @@ const getData = async (key: string) => {
   }
 };
 
-const setLoginInfo = async (username: string, password: string) => {
+export const setLoginInfo = async (username: string, password: string) => {
   await Promise.all([
     storeData("username", username),
     storeData("password", password),
   ]);
 };
 
-const getLoginInfo = async () => {
+export const getLoginInfo = async () => {
   const [username, password] = await Promise.all([
     getData("username"),
     getData("password"),
@@ -34,4 +34,19 @@ const getLoginInfo = async () => {
   return { username, password };
 };
 
-export { setLoginInfo, getLoginInfo };
+export const removeLoginInfo = async () => {
+  await Promise.all([
+    AsyncStorage.removeItem("username"),
+    AsyncStorage.removeItem("password"),
+  ]);
+};
+
+export const setAccessTokenResponse = async (reponse: object) => {
+  await storeData("accessToken", JSON.stringify(reponse));
+};
+
+export const getAccessTokenResponse = async () => {
+  const value = await getData("accessToken");
+  if (!value) throw new Error("No access token found");
+  return JSON.parse(value);
+};

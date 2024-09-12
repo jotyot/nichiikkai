@@ -1,18 +1,21 @@
-import { ThemedText } from "./ThemedText";
-import { ThemedTextInput } from "./ThemedTextInput";
-import { ThemedView } from "./ThemedView";
-import { StyleSheet } from "react-native";
+import { ThemedText } from "../ThemedText";
+import { ThemedTextInput } from "../ThemedTextInput";
+import { ThemedView } from "../ThemedView";
+import { StyleSheet, TouchableOpacity } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export type NamedFieldProps = {
   name: string;
   fieldContent: string;
   setFieldContent: (content: string) => void;
+  secureTextEntry?: boolean;
 };
 
 export function NamedField({
   name,
   fieldContent,
   setFieldContent,
+  secureTextEntry = false,
 }: NamedFieldProps) {
   return (
     <ThemedView style={styles.container}>
@@ -21,6 +24,7 @@ export function NamedField({
         value={fieldContent}
         onChangeText={setFieldContent}
         style={styles.textInput}
+        secureTextEntry={secureTextEntry}
       />
     </ThemedView>
   );

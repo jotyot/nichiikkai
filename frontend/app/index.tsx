@@ -1,47 +1,26 @@
-import { StyleSheet } from "react-native";
-import { Link } from "expo-router";
-import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { useState } from "react";
-import { setLoginInfo } from "@/storage/Storage";
-import { NamedField } from "@/components/NamedField";
-import { WideButton } from "@/components/WideButton";
+import { ThemedView } from "@/components/ThemedView";
+import { getLoginInfo } from "@/storage/Storage";
+import { router } from "expo-router";
+import { useEffect } from "react";
+import { StyleSheet } from "react-native";
 
-export default function Register() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const handleRegister = async () => {
-    // await setLoginInfo(username, password);
-  };
+// checks if there is a username and password in storage, redirects to login page if not
+export default function Index() {
+  useEffect(() => {
+    getLoginInfo().then(({ username, password }) => {
+      if (!username || !password) {
+        router.replace("/login");
+      } else {
+        router.replace("/(tabs)");
+      }
+    });
+  }, []);
 
   return (
     <ThemedView style={styles.container}>
       <ThemedText style={styles.text} type="title">
-        Sign up
-      </ThemedText>
-      <NamedField
-        name="Email"
-        fieldContent={username}
-        setFieldContent={setUsername}
-      />
-      <NamedField
-        name="Password"
-        fieldContent={password}
-        setFieldContent={setPassword}
-      />
-      <NamedField
-        name="Confirm Password"
-        fieldContent={confirmPassword}
-        setFieldContent={setConfirmPassword}
-      />
-      <WideButton text="Sign up" onPress={handleRegister} />
-      <ThemedText>
-        Already have an account?{" "}
-        <Link href="/login">
-          <ThemedText style={{ color: "blue" }}>Sign in</ThemedText>
-        </Link>
+        Welcome to the app!
       </ThemedText>
     </ThemedView>
   );
