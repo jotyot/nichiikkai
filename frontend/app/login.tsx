@@ -15,9 +15,12 @@ import { PasswordInput } from "@/components/logins/PasswordInput";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [signinFailed, setSigninFailed] = useState(false);
+  const [signingIn, setSigningIn] = useState(false);
 
-  const handleLogin = async () => {
+  const handleSignin = async () => {
     try {
+      setSigningIn(true);
       const response = await fetch(
         "https://backend-image-952837685482.us-central1.run.app/identity/login",
         {
@@ -36,10 +39,12 @@ export default function Login() {
         ]);
         router.replace("/(tabs)");
       } else {
-        console.log("Login failed)");
+        setSigninFailed(true);
       }
     } catch (e) {
       console.log(e);
+    } finally {
+      setSigningIn(false);
     }
   };
 
@@ -59,7 +64,12 @@ export default function Login() {
         setFieldContent={setPassword}
         canHide
       />
-      <WideButton text="Sign in" onPress={handleLogin} />
+      {signinFailed && (
+        <ThemedText style={{ color: "red" }}>
+          Incorrect email or password.
+        </ThemedText>
+      )}
+      <WideButton text="Sign in" onPress={handleSignin} inactive={signingIn} />
       <ThemedText>
         Don't have an account?{" "}
         <Link href="/register">

@@ -4,14 +4,20 @@ import { ThemedText } from "../themed/ThemedText";
 export type WideButtonProps = {
   text: string;
   onPress: () => void;
+  inactive?: boolean;
 };
 
-export function WideButton({ text, onPress }: WideButtonProps) {
+export function WideButton({
+  text,
+  onPress,
+  inactive = false,
+}: WideButtonProps) {
   return (
     <TouchableOpacity
-      style={styles.button}
+      style={[styles.button, { opacity: inactive ? 0.5 : 1 }]}
       onPress={onPress}
       activeOpacity={0.8}
+      disabled={inactive}
     >
       <ThemedText style={styles.text}>{text}</ThemedText>
     </TouchableOpacity>
@@ -20,7 +26,7 @@ export function WideButton({ text, onPress }: WideButtonProps) {
 
 const styles = StyleSheet.create({
   button: {
-    width: "95%",
+    width: "90%",
     padding: 10,
     alignItems: "center",
     backgroundColor: "blue",

@@ -44,11 +44,11 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   text: {
-    width: "95%",
+    width: "90%",
     padding: 5,
   },
   textInput: {
-    width: "95%",
+    width: "90%",
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderWidth: 2,
