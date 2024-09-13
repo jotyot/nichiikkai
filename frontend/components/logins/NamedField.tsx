@@ -1,31 +1,38 @@
-import { ThemedText } from "../ThemedText";
-import { ThemedTextInput } from "../ThemedTextInput";
-import { ThemedView } from "../ThemedView";
-import { StyleSheet, TouchableOpacity } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { ThemedText } from "../themed/ThemedText";
+import { ThemedTextInput } from "../themed/ThemedTextInput";
+import { ThemedView } from "../themed/ThemedView";
+import { StyleSheet } from "react-native";
+import { PasswordInput } from "./PasswordInput";
 
 export type NamedFieldProps = {
   name: string;
   fieldContent: string;
   setFieldContent: (content: string) => void;
-  secureTextEntry?: boolean;
+  canHide?: boolean;
 };
 
 export function NamedField({
   name,
   fieldContent,
   setFieldContent,
-  secureTextEntry = false,
+  canHide = false,
 }: NamedFieldProps) {
   return (
     <ThemedView style={styles.container}>
       <ThemedText style={styles.text}>{name}</ThemedText>
-      <ThemedTextInput
-        value={fieldContent}
-        onChangeText={setFieldContent}
-        style={styles.textInput}
-        secureTextEntry={secureTextEntry}
-      />
+      {canHide ? (
+        <PasswordInput
+          password={fieldContent}
+          setPassword={setFieldContent}
+          style={styles.textInput}
+        ></PasswordInput>
+      ) : (
+        <ThemedTextInput
+          value={fieldContent}
+          onChangeText={setFieldContent}
+          style={styles.textInput}
+        />
+      )}
     </ThemedView>
   );
 }

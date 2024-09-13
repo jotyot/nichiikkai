@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { Link, router } from "expo-router";
-import { ThemedView } from "@/components/ThemedView";
-import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/themed/ThemedView";
+import { ThemedText } from "@/components/themed/ThemedText";
 import { useState } from "react";
 import {
   getAccessTokenResponse,
@@ -53,7 +53,12 @@ export default function Login() {
         fieldContent={username}
         setFieldContent={setUsername}
       />
-      <PasswordInput password={password} setPassword={setPassword} />
+      <NamedField
+        name="Password"
+        fieldContent={password}
+        setFieldContent={setPassword}
+        canHide
+      />
       <WideButton text="Sign in" onPress={handleLogin} />
       <ThemedText>
         Don't have an account?{" "}
