@@ -17,6 +17,7 @@ builder.Services.AddScoped<NIKService>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
 // builder.Services.AddAuthentication(
 // options =>
 // {
@@ -41,7 +42,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
+// idk when i upload this to google cloud the [authorize] endpoints dont work
+// app.UseHttpsRedirection();
 app.UseRouting();
 app.UseCors(x => x
     .AllowAnyMethod()
