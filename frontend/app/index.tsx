@@ -12,7 +12,7 @@ export default function Index() {
       if (!username || !password) {
         router.replace("/login");
       } else {
-        router.replace("/(tabs)");
+        router.replace("/signing-in");
       }
     });
   }, []);

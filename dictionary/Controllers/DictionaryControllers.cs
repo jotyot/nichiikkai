@@ -81,8 +81,9 @@ public class DictionaryController : ControllerBase
 
     /*
         Generates a word that isn't in the list of word pairs sent by the client
+        Also google cloud doesnt like it when you send a body with a get request
     */
-    [HttpGet("generate-word")]
+    [HttpPost("generate-word")]
     public async Task<ActionResult<WordBase>> GenerateWord([FromQuery] List<string> levels, [FromBody] List<WordPair> wordPairs)
     {
         try

@@ -3,14 +3,9 @@ import { Link, router } from "expo-router";
 import { ThemedView } from "@/components/themed/ThemedView";
 import { ThemedText } from "@/components/themed/ThemedText";
 import { useState } from "react";
-import {
-  getAccessTokenResponse,
-  setAccessTokenResponse,
-  setLoginInfo,
-} from "@/storage/Storage";
+import { setAccessTokenResponse, setLoginInfo } from "@/storage/Storage";
 import { NamedField } from "@/components/logins/NamedField";
 import { WideButton } from "@/components/logins/WideButton";
-import { PasswordInput } from "@/components/logins/PasswordInput";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -37,7 +32,7 @@ export default function Login() {
           setLoginInfo(username, password),
           setAccessTokenResponse(data),
         ]);
-        router.replace("/(tabs)");
+        router.replace("/fetching-data");
       } else {
         setSigninFailed(true);
       }
