@@ -26,7 +26,6 @@ async function appSetUp() {
   }
 }
 
-// checks if there is a username and password in storage, redirects to login page if not
 export default function SigningIn() {
   useEffect(() => {
     appSetUp().then(() => {

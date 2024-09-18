@@ -39,7 +39,7 @@ async function getUserWords() {
     const data: UserWord[] = await response.json();
     return data;
   } else {
-    throw new Error("Failed to get user data");
+    throw new Error("Failed to get user data: " + JSON.stringify(response));
   }
 }
 
@@ -59,7 +59,7 @@ async function getUserLevels() {
     const data: string[] = await response.json();
     return data;
   } else {
-    throw new Error("Failed to get user levels");
+    throw new Error("Failed to get user levels: " + JSON.stringify(response));
   }
 }
 

@@ -10,6 +10,7 @@ import {
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { WordBase } from "@/types/Types";
+import { WordDisplay } from "@/components/learning/WordDisplay";
 
 async function getWordOfTheDay() {
   const userLevels = await getUserLevels();
@@ -37,26 +38,21 @@ async function getWordOfTheDay() {
 }
 
 export default function HomeScreen() {
-  const [loaded, setLoaded] = useState(false);
   const [wordOfTheDay, setWordOfTheDay] = useState<WordBase | null>(null);
 
   useEffect(() => {
     getWordOfTheDay()
       .then((word) => {
         setWordOfTheDay(word);
-        setLoaded(true);
       })
       .catch((error) => {
         console.error(error);
-        setLoaded(true);
       });
   }, []);
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText>
-        {loaded ? JSON.stringify(wordOfTheDay) : "Loading..."}
-      </ThemedText>
+      <WordDisplay word={wordOfTheDay} />
       <WideButton
         text="Log out"
         onPress={async () => {
