@@ -9,7 +9,7 @@ import {
 } from "@/storage/Storage";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { WordBase } from "@/types/Types";
+import { WordBase, WordData } from "@/types/Types";
 import { WordDisplay } from "@/components/learning/WordDisplay";
 
 async function getWordOfTheDay() {
@@ -30,15 +30,31 @@ async function getWordOfTheDay() {
     }
   );
   if (response.status === 200) {
-    const data: WordBase = await response.json();
+    const wordBase: WordBase = await response.json();
+    const data = await getWordData(wordBase);
     return data;
   } else {
     throw new Error("Failed to get word of the day: " + response);
   }
 }
 
+async function getWordData(word: WordBase) {
+  const response = await fetch(
+    "https://dictionary-952837685482.us-west1.run.app/Dictionary/" +
+      word.word +
+      "/" +
+      word.reading
+  );
+  if (response.status === 200) {
+    const data: WordData = await response.json();
+    return data;
+  } else {
+    throw new Error("Failed to get word data: " + response);
+  }
+}
+
 export default function HomeScreen() {
-  const [wordOfTheDay, setWordOfTheDay] = useState<WordBase | null>(null);
+  const [wordOfTheDay, setWordOfTheDay] = useState<WordData | null>(null);
 
   useEffect(() => {
     getWordOfTheDay()
