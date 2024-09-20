@@ -12,17 +12,17 @@ async function appSetUp() {
       "https://backend-image-952837685482.us-central1.run.app/identity/login",
       {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ email: username, password: password }),
       }
-    );
-    console.log("data api called");
+    )
     if (response.status === 200) {
       const data = await response.json();
-      console.log("new access token set");
       await setAccessTokenResponse(data);
     } else {
       console.log("response status not 200: " + response.status);
-      router.replace("/login");
     }
   } catch (e) {
     console.log(e);

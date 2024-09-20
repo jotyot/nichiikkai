@@ -12,38 +12,42 @@ export function WordDisplay({ word }: WordDisplayProps) {
 }
 
 function LoadedWord(word: WordData) {
-  const width = Math.min(Dimensions.get("window").width, 600);
 
+
+  const width = Math.min(Dimensions.get("window").width, 600);
+  
   const wordFontSize = Math.min(200, (width / word.wordBase.word.length) * 0.8);
   const readingFontSize = Math.min(
     100,
-    (width / word.wordBase.reading.length) * 0.4
+    (width / word.wordBase.reading.length) * 0.3
   );
-  const meaningFontSize = Math.max(
-    Math.min(readingFontSize, (width / word.meanings[0].length) * 1.8),
-    15
-  );
+  
 
   return (
     <ThemedView style={styles.container}>
       <ThemedText
-        style={[styles.text, { fontSize: wordFontSize }]}
+        style={[styles.readingText, { fontSize: readingFontSize }]}
+      >
+        {word.wordBase.reading}
+      </ThemedText>
+      <ThemedText
+        style={[styles.titleText, { fontSize: wordFontSize }]}
         type="subtitle"
       >
         {word.wordBase.word}
       </ThemedText>
       <ThemedText
-        style={[styles.text, { fontSize: readingFontSize }]}
-        type="subtitle"
+        style={styles.partsOfSpeechText}
       >
-        {word.wordBase.reading}
+        {word.partsOfSpeech.join(", ")}
       </ThemedText>
       <ThemedText
-        style={[styles.meaningText, { fontSize: meaningFontSize }]}
+        style={styles.meaningText}
         type="subtitle"
       >
-        {word.meanings[0]}
+        {word.meanings.join(", ")}
       </ThemedText>
+      
     </ThemedView>
   );
 }
@@ -51,14 +55,22 @@ function LoadedWord(word: WordData) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
   },
-  text: {
+  titleText: {
     textAlign: "center",
   },
-  meaningText: {
+  readingText: {
     textAlign: "center",
-    marginVertical: 7,
+    marginVertical: -40,
+  },
+  partsOfSpeechText: {
+    textAlign: "left",
+    fontSize: 25
+  },
+  meaningText: {
+    textAlign: "left",
+    fontSize: 40,
+    marginVertical: 10
   },
 });

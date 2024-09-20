@@ -2,8 +2,6 @@ import { ThemedText } from "@/components/themed/ThemedText";
 import { ThemedView } from "@/components/themed/ThemedView";
 import {
   getAccessTokenResponse,
-  getLoginInfo,
-  setAccessTokenResponse,
   setUserLevels,
   setUserWords,
 } from "@/storage/Storage";
@@ -33,7 +31,7 @@ async function getUserWords() {
       headers: {
         Authorization: "Bearer " + accessToken,
       },
-    }
+    } 
   );
   if (response.status === 200) {
     const data: UserWord[] = await response.json();
