@@ -1,7 +1,8 @@
 import { WordData } from "@/types/Types";
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet, Dimensions, SafeAreaView, ScrollView, StatusBar } from "react-native";
 import { ThemedText } from "../themed/ThemedText";
 import { ThemedView } from "../themed/ThemedView";
+import { ThemedLineDivider } from "../themed/ThemedLineDivider";
 
 export type WordDisplayProps = {
   word: WordData | null;
@@ -13,8 +14,8 @@ export function WordDisplay({ word }: WordDisplayProps) {
 
 function LoadedWord(word: WordData) {
 
-
   const width = Math.min(Dimensions.get("window").width, 600);
+  const height = Dimensions.get("window").height
   
   const wordFontSize = Math.min(200, (width / word.wordBase.word.length) * 0.8);
   const readingFontSize = Math.min(
@@ -24,7 +25,9 @@ function LoadedWord(word: WordData) {
   
 
   return (
-    <ThemedView style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <ThemedView style={{height: height / 5}}/>
       <ThemedText
         style={[styles.readingText, { fontSize: readingFontSize }]}
       >
@@ -47,22 +50,48 @@ function LoadedWord(word: WordData) {
       >
         {word.meanings.join(", ")}
       </ThemedText>
-      
-    </ThemedView>
+      <ThemedLineDivider style={styles.divider}/>
+      {word.sentences &&
+        word.sentences.map((sentence, index) => {
+          return (
+            <ThemedView key={index}>
+            <ThemedText
+              key={index}
+              style={styles.sentenceText}
+            >
+              {sentence.japanese}
+            </ThemedText>
+            <ThemedText
+            key={index+"a"}
+              style={styles.translationText}
+            >
+              {sentence.english}
+            </ThemedText>
+            </ThemedView>
+          );
+        })
+      }</ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    paddingTop: StatusBar.currentHeight,
   },
-  titleText: {
-    textAlign: "center",
+  scrollView: {
+    marginHorizontal: 0,
+  },
+  filler: {
+    height: 0,
   },
   readingText: {
     textAlign: "center",
-    marginVertical: -40,
+    marginBottom: -40,
+  },
+  titleText: {
+    textAlign: "center",
   },
   partsOfSpeechText: {
     textAlign: "left",
@@ -73,4 +102,16 @@ const styles = StyleSheet.create({
     fontSize: 40,
     marginVertical: 10
   },
+  sentenceText: {
+    textAlign: "left",
+    marginTop: 5,
+    fontSize: 25,
+  },
+  translationText: {
+    textAlign: "left",
+    fontSize: 15,
+  },
+  divider: {
+    marginVertical: 30,
+  }
 });
