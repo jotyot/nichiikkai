@@ -27,50 +27,54 @@ function LoadedWord(word: WordData) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
-        <ThemedView style={{height: height / 5}}/>
-      <ThemedText
-        style={[styles.readingText, { fontSize: readingFontSize }]}
-      >
-        {word.wordBase.reading}
-      </ThemedText>
-      <ThemedText
-        style={[styles.titleText, { fontSize: wordFontSize }]}
-        type="subtitle"
-      >
-        {word.wordBase.word}
-      </ThemedText>
-      <ThemedText
-        style={styles.partsOfSpeechText}
-      >
-        {word.partsOfSpeech.join(", ")}
-      </ThemedText>
-      <ThemedText
-        style={styles.meaningText}
-        type="subtitle"
-      >
-        {word.meanings.join(", ")}
-      </ThemedText>
-      <ThemedLineDivider style={styles.divider}/>
-      {word.sentences &&
-        word.sentences.map((sentence, index) => {
-          return (
-            <ThemedView key={index}>
-            <ThemedText
-              key={index}
-              style={styles.sentenceText}
-            >
-              {sentence.japanese}
-            </ThemedText>
-            <ThemedText
-            key={index+"a"}
-              style={styles.translationText}
-            >
-              {sentence.english}
-            </ThemedText>
-            </ThemedView>
-          );
-        })
-      }</ScrollView>
+        <ThemedView style={styles.content}>
+        <ThemedView style={{height: 50}}/>
+        <ThemedLineDivider style={styles.divider}/>
+        <ThemedText
+          style={[styles.readingText, { fontSize: readingFontSize }]}
+        >
+          {word.wordBase.reading}
+        </ThemedText>
+        <ThemedText
+          style={[styles.titleText, { fontSize: wordFontSize }]}
+          type="subtitle"
+        >
+          {word.wordBase.word}
+        </ThemedText>
+        <ThemedText
+          style={styles.partsOfSpeechText}
+        >
+          {word.partsOfSpeech.join(", ")}
+        </ThemedText>
+        <ThemedText
+          style={styles.meaningText}
+          type="subtitle"
+        >
+          {word.meanings.join(", ")}
+        </ThemedText>
+        <ThemedLineDivider style={styles.divider}/>
+        {word.sentences &&
+          word.sentences.map((sentence, index) => {
+            return (
+              <ThemedView key={index}>
+              <ThemedText
+                key={index}
+                style={styles.sentenceText}
+              >
+                {sentence.japanese}
+              </ThemedText>
+              <ThemedText
+              key={index+"a"}
+                style={styles.translationText}
+              >
+                {sentence.english}
+              </ThemedText>
+              </ThemedView>
+            );
+          })
+        }        
+      </ThemedView>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -79,12 +83,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight,
+    width: "100%",
   },
   scrollView: {
     marginHorizontal: 0,
   },
-  filler: {
-    height: 0,
+  content: {
+    marginHorizontal: 30,
   },
   readingText: {
     textAlign: "center",
@@ -112,6 +117,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   divider: {
-    marginVertical: 30,
+    marginVertical: 40,
   }
 });
