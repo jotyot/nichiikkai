@@ -1,13 +1,6 @@
 import { StyleSheet } from "react-native";
-import { ThemedText } from "@/components/themed/ThemedText";
 import { ThemedView } from "@/components/themed/ThemedView";
-import { WideButton } from "@/components/logins/WideButton";
-import {
-  getUserLevels,
-  getUserWords,
-  removeLoginInfo,
-} from "@/storage/Storage";
-import { router } from "expo-router";
+import { getUserLevels, getUserWords } from "@/storage/Storage";
 import { useEffect, useState } from "react";
 import { WordBase, WordData } from "@/types/Types";
 import { WordDisplay } from "@/components/learning/WordDisplay";
@@ -69,13 +62,6 @@ export default function HomeScreen() {
   return (
     <ThemedView style={styles.container}>
       <WordDisplay word={wordOfTheDay} />
-      <WideButton
-        text="Log out"
-        onPress={async () => {
-          await removeLoginInfo();
-          router.replace("/login");
-        }}
-      />
     </ThemedView>
   );
 }
@@ -84,6 +70,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    flex: 1
+    flex: 1,
   },
 });
