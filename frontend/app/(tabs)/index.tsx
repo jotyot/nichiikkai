@@ -1,9 +1,11 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { ThemedView } from "@/components/themed/ThemedView";
 import { getUserLevels, getUserWords } from "@/storage/Storage";
 import { useEffect, useState } from "react";
 import { WordBase, WordData } from "@/types/Types";
 import { WordDisplay } from "@/components/learning/WordDisplay";
+import { ThemedText } from "@/components/themed/ThemedText";
+import { LearnButton } from "@/components/learning/LearnButton";
 
 async function getWordOfTheDay() {
   const userLevels = await getUserLevels();
@@ -60,16 +62,16 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <ThemedView style={styles.container}>
-      <WordDisplay word={wordOfTheDay} />
-    </ThemedView>
+      <ThemedView style={styles.container}>
+        <WordDisplay word={wordOfTheDay} />
+        <LearnButton onPress={() => {}} />
+      </ThemedView>
+      
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
-    justifyContent: "center",
     flex: 1,
   },
 });

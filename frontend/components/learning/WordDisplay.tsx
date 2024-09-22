@@ -106,12 +106,12 @@ const styles = StyleSheet.create({
   },
   sentenceText: {
     textAlign: "left",
-    marginTop: 20,
     fontSize: 25,
   },
   translationText: {
     textAlign: "left",
     fontSize: 15,
+    marginBottom: 20,
   },
   divider: {
     marginVertical: 50,
