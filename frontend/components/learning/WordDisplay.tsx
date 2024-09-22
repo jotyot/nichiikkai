@@ -9,7 +9,11 @@ export type WordDisplayProps = {
 };
 
 export function WordDisplay({ word }: WordDisplayProps) {
-  return word ? LoadedWord(word) : <ThemedText>Loading...</ThemedText>;
+  return word ? (
+    LoadedWord(word)
+  ) : (
+    <ThemedText style={styles.loadingText}>Loading...</ThemedText>
+  );
 }
 
 function LoadedWord(word: WordData) {
@@ -70,6 +74,9 @@ function LoadedWord(word: WordData) {
 }
 
 const styles = StyleSheet.create({
+  loadingText: {
+    fontSize: 24,
+  },
   container: {
     flex: 1,
     paddingTop: StatusBar.currentHeight,
