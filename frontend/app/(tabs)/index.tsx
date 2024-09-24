@@ -1,13 +1,12 @@
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet } from "react-native";
 import { ThemedView } from "@/components/themed/ThemedView";
-import { getUserLevels, getUserWords } from "@/storage/Storage";
+import { getLastWordDate, getUserLevels, getUserWords, getWordOfTheDay, setLastWordDate, setWordOfTheDay } from "@/storage/Storage";
 import { useEffect, useState } from "react";
 import { WordBase, WordData } from "@/types/Types";
 import { WordDisplay } from "@/components/learning/WordDisplay";
-import { ThemedText } from "@/components/themed/ThemedText";
 import { LearnButton } from "@/components/learning/LearnButton";
 
-async function getWordOfTheDay() {
+async function generateWordOfTheDay() {
   const userLevels = await getUserLevels();
   const userWords = await getUserWords();
   const response = await fetch(
@@ -26,14 +25,17 @@ async function getWordOfTheDay() {
   );
   if (response.status === 200) {
     const wordBase: WordBase = await response.json();
-    const data = await getWordData(wordBase);
+    
+    const chosenWordBase = await chooseWordBase(wordBase); 
+
+    const data = await generateWordData(chosenWordBase);
     return data;
   } else {
     throw new Error("Failed to get word of the day: " + response);
   }
 }
 
-async function getWordData(word: WordBase) {
+async function generateWordData(word: WordBase) {
   const response = await fetch(
     "https://dictionary-952837685482.us-west1.run.app/Dictionary/" +
       word.word +
@@ -48,13 +50,25 @@ async function getWordData(word: WordBase) {
   }
 }
 
+// so it takes one day to get a new word of the day  
+async function chooseWordBase(apiCallWordBase: WordBase) : Promise<WordBase>{
+  if (new Date().toLocaleDateString() === await getLastWordDate()) {
+    return await getWordOfTheDay();
+  }
+  else {
+    await setLastWordDate(new Date().toLocaleDateString());
+    await setWordOfTheDay(apiCallWordBase);
+    return apiCallWordBase;
+  }
+}
+
 export default function HomeScreen() {
-  const [wordOfTheDay, setWordOfTheDay] = useState<WordData | null>(null);
+  const [wordOfTheDayState, setWordOfTheDayState] = useState<WordData | null>(null);
 
   useEffect(() => {
-    getWordOfTheDay()
+    generateWordOfTheDay()
       .then((word) => {
-        setWordOfTheDay(word);
+        setWordOfTheDayState(word);
       })
       .catch((error) => {
         console.error(error);
@@ -62,11 +76,12 @@ export default function HomeScreen() {
   }, []);
 
   return (
-      <ThemedView style={styles.container}>
-        <WordDisplay word={wordOfTheDay} />
-        <LearnButton onPress={() => {}} />
+      <ThemedView style={styles.container}>   
+          <WordDisplay word={wordOfTheDayState} />
+        {wordOfTheDayState && 
+          <LearnButton onPress={() => {}} />
+        }
       </ThemedView>
-      
   );
 }
 

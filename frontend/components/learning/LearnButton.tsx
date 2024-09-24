@@ -20,16 +20,15 @@ export function LearnButton({onPress}: LearnButtonProps) {
 const styles = StyleSheet.create({
     button: {
         position: "absolute",
-        width: 80,
-        height: 80,
+        width: 120,
+        height: 120,
         padding: 10,
         bottom: 20,
         right: 20,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "blue",
-        borderRadius: 20,
-        marginVertical: 20,
+        backgroundColor: "salmon",
+        borderRadius: 40,
     },
     text: {},
 });

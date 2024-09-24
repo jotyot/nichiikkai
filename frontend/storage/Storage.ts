@@ -1,4 +1,4 @@
-import { AccessTokenResponse, UserWord } from "@/types/Types";
+import { AccessTokenResponse, UserWord, WordBase } from "@/types/Types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const storeData = async (key: string, value: string) => {
@@ -72,3 +72,23 @@ export const getUserWords: () => Promise<UserWord[]> = async () => {
   if (!value) throw new Error("No user words found");
   return JSON.parse(value);
 };
+
+export const setWordOfTheDay = async (word: WordBase) => {
+  await storeData("wordOfTheDay", JSON.stringify(word));   
+}
+
+export const getWordOfTheDay: () => Promise<WordBase> = async () => {
+  const value = await getData("wordOfTheDay");
+  if (!value) throw new Error("No word of the day found");
+  return JSON.parse(value);
+}
+
+export const setLastWordDate = async (date: string) => {
+  await storeData("lastWordDate", date);
+}
+
+export const getLastWordDate: () => Promise<string> = async () => {
+  const value = await getData("lastWordDate");
+  if (!value) throw new Error("No last word date found");
+  return value;
+}

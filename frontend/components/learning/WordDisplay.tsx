@@ -12,7 +12,11 @@ export function WordDisplay({ word }: WordDisplayProps) {
   return word ? (
     LoadedWord(word)
   ) : (
-    <ThemedText style={styles.loadingText}>Loading...</ThemedText>
+    <ThemedView style={styles.loadingContainer}>
+      <ThemedText style={styles.loadingText}
+        >Loading...
+      </ThemedText>
+    </ThemedView>
   );
 }
 
@@ -68,12 +72,18 @@ function LoadedWord(word: WordData) {
               );
             })}
         </ThemedView>
+        <ThemedView style={{ height: 100 }} />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   loadingText: {
     fontSize: 24,
   },
