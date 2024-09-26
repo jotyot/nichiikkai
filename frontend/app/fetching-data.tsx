@@ -4,7 +4,7 @@ import {
   getAccessTokenResponse,
   setUserLevels,
   setUserWords,
-} from "@/storage/Storage";
+} from "@/functions/Storage";
 import { UserWord } from "@/types/Types";
 import { router } from "expo-router";
 import { useEffect } from "react";

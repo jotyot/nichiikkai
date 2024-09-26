@@ -3,7 +3,6 @@ import { Link } from "expo-router";
 import { ThemedView } from "@/components/themed/ThemedView";
 import { ThemedText } from "@/components/themed/ThemedText";
 import { useState } from "react";
-import { setLoginInfo } from "@/storage/Storage";
 import { NamedField } from "@/components/logins/NamedField";
 import { WideButton } from "@/components/logins/WideButton";
 

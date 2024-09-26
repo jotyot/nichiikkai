@@ -1,10 +1,11 @@
 import { StyleSheet } from "react-native";
 import { ThemedView } from "@/components/themed/ThemedView";
-import { getLastWordDate, getUserLevels, getUserWords, getWordOfTheDay, setLastWordDate, setWordOfTheDay } from "@/storage/Storage";
+import { getLastWordDate, getUserLevels, getUserWords, getWordOfTheDay, setLastWordDate, setReviewQueue, setWordOfTheDay } from "@/functions/Storage";
 import { useEffect, useState } from "react";
 import { WordBase, WordData } from "@/types/Types";
 import { WordDisplay } from "@/components/learning/WordDisplay";
 import { LearnButton } from "@/components/learning/LearnButton";
+import { router } from "expo-router";
 
 async function generateWordOfTheDay() {
   const userLevels = await getUserLevels();
@@ -79,7 +80,12 @@ export default function HomeScreen() {
       <ThemedView style={styles.container}>   
           <WordDisplay word={wordOfTheDayState} />
         {wordOfTheDayState && 
-          <LearnButton onPress={() => {}} />
+          <LearnButton onPress={async () => {
+            await setReviewQueue([
+              wordOfTheDayState.wordBase.word + "@" + wordOfTheDayState.wordBase.reading
+            ]);
+            router.replace("/reviews");
+          }} />
         }
       </ThemedView>
   );

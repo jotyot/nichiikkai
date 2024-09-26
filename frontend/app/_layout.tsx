@@ -6,6 +6,8 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { Button } from 'react-native';
+import { ExitReviews } from './reviews';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -35,6 +37,10 @@ export default function RootLayout() {
         <Stack.Screen name="signing-in" options={{ headerShown: false }} />
         <Stack.Screen name="fetching-data" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="reviews" options={{
+          title: "",
+           headerRight: () => <Button title="return" onPress={ExitReviews} />,
+           }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>

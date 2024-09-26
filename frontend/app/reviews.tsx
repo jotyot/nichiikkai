@@ -1,36 +1,40 @@
 import { ThemedText } from "@/components/themed/ThemedText";
 import { ThemedView } from "@/components/themed/ThemedView";
-import { getLoginInfo } from "@/functions/Storage";
+import { getReviewQueue } from "@/functions/Storage";
 import { router } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { StyleSheet } from "react-native";
+import { Reviewer } from "@/functions/Reviewer";
 
-// checks if there is a username and password in storage, redirects to login page if not
-export default function Index() {
+export default function ReviewsScreen() {
+
+  const reviewer = useRef<Reviewer | null>(null);
+
   useEffect(() => {
-    getLoginInfo().then(({ username, password }) => {
-      if (!username || !password) {
-        router.replace("/login");
-      } else {
-        router.replace("/signing-in");
-      }
-    });
+    (async () => {
+      const reviewQueue = await getReviewQueue();
+      reviewer.current = new Reviewer(reviewQueue);
+    })();
   }, []);
-
+  
   return (
     <ThemedView style={styles.container}>
       <ThemedText style={styles.text} type="title">
-        Welcome to the app!
+        Reviews
       </ThemedText>
     </ThemedView>
   );
 }
 
+export async function ExitReviews () {
+  router.replace("/(tabs)");
+}
+
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    height: "100%",
   },
   text: {
     fontSize: 24,

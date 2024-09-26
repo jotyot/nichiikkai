@@ -1,6 +1,6 @@
 import { ThemedText } from "@/components/themed/ThemedText";
 import { ThemedView } from "@/components/themed/ThemedView";
-import { getLoginInfo, setAccessTokenResponse } from "@/storage/Storage";
+import { getLoginInfo, setAccessTokenResponse } from "@/functions/Storage";
 import { router } from "expo-router";
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";

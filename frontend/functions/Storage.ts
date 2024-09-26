@@ -74,21 +74,31 @@ export const getUserWords: () => Promise<UserWord[]> = async () => {
 };
 
 export const setWordOfTheDay = async (word: WordBase) => {
-  await storeData("wordOfTheDay", JSON.stringify(word));   
-}
+  await storeData("wordOfTheDay", JSON.stringify(word));
+};
 
 export const getWordOfTheDay: () => Promise<WordBase> = async () => {
   const value = await getData("wordOfTheDay");
   if (!value) throw new Error("No word of the day found");
   return JSON.parse(value);
-}
+};
 
 export const setLastWordDate = async (date: string) => {
   await storeData("lastWordDate", date);
-}
+};
 
 export const getLastWordDate: () => Promise<string> = async () => {
   const value = await getData("lastWordDate");
   if (!value) throw new Error("No last word date found");
   return value;
-}
+};
+
+export const setReviewQueue = async (reviewQueue: string[]) => {
+  await storeData("reviewQueue", JSON.stringify(reviewQueue));
+};
+
+export const getReviewQueue: () => Promise<string[]> = async () => {
+  const value = await getData("reviewQueue");
+  if (!value) throw new Error("No review queue found");
+  return JSON.parse(value);
+};
