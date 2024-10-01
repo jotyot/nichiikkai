@@ -14,15 +14,15 @@ import { WordBase, WordData } from "@/types/Types";
 import { WordDisplay } from "@/components/learning/WordDisplay";
 import { LearnButton } from "@/components/learning/LearnButton";
 import { router } from "expo-router";
-import { FetchWordData, FetchWordOfTheDay } from "@/functions/DataFetching";
+import { GETWordData, GETWordOfTheDay } from "@/functions/APICalls";
 
 async function generateWordOfTheDay() {
   const userLevels = await GetUserLevels();
   const userWords = await GetUserWords();
 
-  const wordBase: WordBase = await FetchWordOfTheDay(userLevels, userWords);
+  const wordBase: WordBase = await GETWordOfTheDay(userLevels, userWords);
   const chosenWordBase = await chooseWordBase(wordBase);
-  const data = await FetchWordData(chosenWordBase);
+  const data = await GETWordData(chosenWordBase);
 
   return data;
 }

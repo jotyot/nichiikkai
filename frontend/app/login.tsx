@@ -6,7 +6,7 @@ import { useState } from "react";
 import { SetAccessTokenResponse, SetLoginInfo } from "@/functions/Storage";
 import { NamedField } from "@/components/logins/NamedField";
 import { WideButton } from "@/components/logins/WideButton";
-import { FetchLoginInfo } from "@/functions/DataFetching";
+import { POSTLogin } from "@/functions/APICalls";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -17,7 +17,7 @@ export default function Login() {
   const handleSignin = async () => {
     try {
       setSigningIn(true);
-      const response = await FetchLoginInfo(username, password);
+      const response = await POSTLogin(username, password);
       await Promise.all([
         SetLoginInfo(username, password),
         SetAccessTokenResponse(response),

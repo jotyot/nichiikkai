@@ -1,6 +1,6 @@
 import { ThemedText } from "@/components/themed/ThemedText";
 import { ThemedView } from "@/components/themed/ThemedView";
-import { FetchLoginInfo } from "@/functions/DataFetching";
+import { POSTLogin } from "@/functions/APICalls";
 import { GetLoginInfo, SetAccessTokenResponse } from "@/functions/Storage";
 import { router } from "expo-router";
 import { useEffect } from "react";
@@ -11,7 +11,7 @@ async function appSetUp() {
   if (!username || !password) {
     throw new Error("No username or password found");
   }
-  const response = await FetchLoginInfo(username, password);
+  const response = await POSTLogin(username, password);
   await SetAccessTokenResponse(response);
 }
 

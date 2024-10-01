@@ -1,6 +1,6 @@
 import { ThemedText } from "@/components/themed/ThemedText";
 import { ThemedView } from "@/components/themed/ThemedView";
-import { FetchUserLevels, FetchUserWords } from "@/functions/DataFetching";
+import { GETUserLevels, GETUserWords } from "@/functions/APICalls";
 import {
   GetAccessTokenResponse,
   SetUserLevels,
@@ -13,8 +13,8 @@ import { StyleSheet } from "react-native";
 async function appSetUp() {
   try {
     const accessToken = (await GetAccessTokenResponse()).accessToken;
-    const userWords = await FetchUserWords(accessToken);
-    const userLevels = await FetchUserLevels(accessToken);
+    const userWords = await GETUserWords(accessToken);
+    const userLevels = await GETUserLevels(accessToken);
     await SetUserWords(userWords);
     await SetUserLevels(userLevels);
   } catch (e) {
