@@ -3,9 +3,10 @@ import { Link, router } from "expo-router";
 import { ThemedView } from "@/components/themed/ThemedView";
 import { ThemedText } from "@/components/themed/ThemedText";
 import { useState } from "react";
-import { setAccessTokenResponse, setLoginInfo } from "@/functions/Storage";
+import { SetAccessTokenResponse, SetLoginInfo } from "@/functions/Storage";
 import { NamedField } from "@/components/logins/NamedField";
 import { WideButton } from "@/components/logins/WideButton";
+import { FetchLoginInfo } from "@/functions/DataFetching";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -16,28 +17,15 @@ export default function Login() {
   const handleSignin = async () => {
     try {
       setSigningIn(true);
-      const response = await fetch(
-        "https://backend-image-952837685482.us-central1.run.app/identity/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: username, password: password }),
-        }
-      );
-      if (response.status === 200) {
-        const data = await response.json();
-        await Promise.all([
-          setLoginInfo(username, password),
-          setAccessTokenResponse(data),
-        ]);
-        router.replace("/fetching-data");
-      } else {
-        setSigninFailed(true);
-      }
+      const response = await FetchLoginInfo(username, password);
+      await Promise.all([
+        SetLoginInfo(username, password),
+        SetAccessTokenResponse(response),
+      ]);
+      router.replace("/fetching-data");
     } catch (e) {
       console.log(e);
+      setSigninFailed(true);
     } finally {
       setSigningIn(false);
     }

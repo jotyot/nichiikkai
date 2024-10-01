@@ -1,20 +1,19 @@
 import { ThemedText } from "@/components/themed/ThemedText";
 import { ThemedView } from "@/components/themed/ThemedView";
-import { getReviewQueue } from "@/functions/Storage";
+import { GetReviewQueue } from "@/functions/Storage";
 import { router } from "expo-router";
 import { useEffect, useRef } from "react";
 import { StyleSheet } from "react-native";
 import { Reviewer } from "@/functions/Reviewer";
+import { WordData } from "@/types/Types";
 
 export default function ReviewsScreen() {
 
   const reviewer = useRef<Reviewer | null>(null);
+  const wordData = useRef<Map<string, WordData>>(new Map<string, WordData>());
 
   useEffect(() => {
-    (async () => {
-      const reviewQueue = await getReviewQueue();
-      reviewer.current = new Reviewer(reviewQueue);
-    })();
+
   }, []);
   
   return (

@@ -1,39 +1,31 @@
 import { ThemedText } from "@/components/themed/ThemedText";
 import { ThemedView } from "@/components/themed/ThemedView";
-import { getLoginInfo, setAccessTokenResponse } from "@/functions/Storage";
+import { FetchLoginInfo } from "@/functions/DataFetching";
+import { GetLoginInfo, SetAccessTokenResponse } from "@/functions/Storage";
 import { router } from "expo-router";
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
 
 async function appSetUp() {
-  const { username, password } = await getLoginInfo();
-  try {
-    const response = await fetch(
-      "https://backend-image-952837685482.us-central1.run.app/identity/login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: username, password: password }),
-      }
-    )
-    if (response.status === 200) {
-      const data = await response.json();
-      await setAccessTokenResponse(data);
-    } else {
-      console.log("response status not 200: " + response.status);
-    }
-  } catch (e) {
-    console.log(e);
+  const { username, password } = await GetLoginInfo();
+  if (!username || !password) {
+    throw new Error("No username or password found");
   }
+  const response = await FetchLoginInfo(username, password);
+  await SetAccessTokenResponse(response);
 }
 
 export default function SigningIn() {
   useEffect(() => {
-    appSetUp().then(() => {
-      router.replace("/fetching-data");
-    });
+    (async () => {
+      try {
+        await appSetUp();
+        router.replace("/fetching-data");
+      } catch (e) {
+        console.log(e);
+        router.replace("/login");
+      }
+    })()
   }, []);
 
   return (

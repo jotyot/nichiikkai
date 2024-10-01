@@ -40,3 +40,8 @@ export type Sentence = {
   japanese: string;
   english: string;
 };
+
+export type WordPair = {
+  word: string;
+  reading: string;
+}

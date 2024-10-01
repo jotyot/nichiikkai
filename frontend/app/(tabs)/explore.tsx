@@ -7,7 +7,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from "@/components/themed/ThemedText";
 import { ThemedView } from "@/components/themed/ThemedView";
 import { WideButton } from "@/components/logins/WideButton";
-import { removeLoginInfo } from "@/storage/Storage";
+import { RemoveLoginInfo } from "@/functions/Storage";
 import { router } from "expo-router";
 
 export default function TabTwoScreen() {
@@ -112,7 +112,7 @@ export default function TabTwoScreen() {
       <WideButton
         text="Log out"
         onPress={async () => {
-          await removeLoginInfo();
+          await RemoveLoginInfo();
           router.replace("/login");
         }}
       />

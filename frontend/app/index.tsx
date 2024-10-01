@@ -1,6 +1,6 @@
 import { ThemedText } from "@/components/themed/ThemedText";
 import { ThemedView } from "@/components/themed/ThemedView";
-import { getLoginInfo } from "@/functions/Storage";
+import { GetLoginInfo } from "@/functions/Storage";
 import { router } from "expo-router";
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
@@ -8,7 +8,7 @@ import { StyleSheet } from "react-native";
 // checks if there is a username and password in storage, redirects to login page if not
 export default function Index() {
   useEffect(() => {
-    getLoginInfo().then(({ username, password }) => {
+    GetLoginInfo().then(({ username, password }) => {
       if (!username || !password) {
         router.replace("/login");
       } else {
