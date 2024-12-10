@@ -21,6 +21,7 @@ async function generateWordOfTheDay() {
   const userWords = await GetUserWords();
 
   const wordBase: WordBase = await GETWordOfTheDay(userLevels, userWords);
+  console.log(wordBase);
   const chosenWordBase = await chooseWordBase(wordBase);
   const data = await GETWordData(chosenWordBase);
 
@@ -29,7 +30,8 @@ async function generateWordOfTheDay() {
 
 // so it takes one day to get a new word of the day
 async function chooseWordBase(apiCallWordBase: WordBase): Promise<WordBase> {
-  if (new Date().toLocaleDateString() === (await GetLastWordDate())) {
+  const lastWordDate = await GetLastWordDate();
+  if (new Date().toLocaleDateString() === lastWordDate) {
     return await GetWordOfTheDay();
   } else {
     await SetLastWordDate(new Date().toLocaleDateString());
@@ -45,9 +47,11 @@ export default function HomeScreen() {
 
   useEffect(() => {
     (async () => {
+      console.log("Generating word of the day");
       const wordOfTheDay = await generateWordOfTheDay();
+      console.log(wordOfTheDay);
       setWordOfTheDayState(wordOfTheDay);
-    })()
+    })();
   }, []);
 
   return (
