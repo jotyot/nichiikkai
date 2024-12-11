@@ -3,19 +3,16 @@ import { ThemedView } from "@/components/themed/ThemedView";
 import { GetReviewQueue } from "@/functions/Storage";
 import { router } from "expo-router";
 import { useEffect, useRef } from "react";
-import { StyleSheet } from "react-native";
+import { Button, StyleSheet } from "react-native";
 import { Reviewer } from "@/functions/Reviewer";
 import { WordData } from "@/types/Types";
 
 export default function ReviewsScreen() {
-
   const reviewer = useRef<Reviewer | null>(null);
   const wordData = useRef<Map<string, WordData>>(new Map<string, WordData>());
 
-  useEffect(() => {
+  useEffect(() => {}, []);
 
-  }, []);
-  
   return (
     <ThemedView style={styles.container}>
       <ThemedText style={styles.text} type="title">

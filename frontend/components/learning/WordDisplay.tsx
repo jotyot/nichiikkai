@@ -57,7 +57,7 @@ function LoadedWord(word: WordData) {
           <ThemedText style={styles.meaningText} type="subtitle">
             {word.meanings.join(", ")}
           </ThemedText>
-          <ThemedLineDivider style={styles.divider} />
+          <ThemedLineDivider style={styles.divider} text="SENTENCES" />
           {word.sentences &&
             word.sentences.map((sentence, index) => {
               return (
