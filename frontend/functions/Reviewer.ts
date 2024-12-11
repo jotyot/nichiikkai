@@ -20,10 +20,7 @@ export class Reviewer {
     Gets the first word in the queue and assigns the current review type.
     Word is undefined if there are no words in the queue.
   */
-  public GetCurrentReviewEntry(): {
-    word: string | undefined;
-    type: "reading" | "meaning";
-  } {
+  public GetCurrentReviewEntry(): ReviewEntry {
     const word = this.reviewQueue.at(0);
     if (!word) return { word: undefined, type: "reading" };
 
@@ -84,3 +81,8 @@ export class Reviewer {
     return this.failed;
   }
 }
+
+export type ReviewEntry = {
+  word: string | undefined;
+  type: "reading" | "meaning";
+};
