@@ -61,10 +61,14 @@ export default function HomeScreen() {
       {wordOfTheDayState && (
         <LearnButton
           onPress={async () => {
+            const wordBase = wordOfTheDayState.wordBase;
             await SetReviewQueue([
-              wordOfTheDayState.wordBase.word +
-                "@" +
-                wordOfTheDayState.wordBase.reading,
+              // wordBase.word +
+              //   "@" +
+              //   wordBase.reading,
+              "test1",
+              "test2",
+              "test3",
             ]);
             router.replace("/reviews");
           }}

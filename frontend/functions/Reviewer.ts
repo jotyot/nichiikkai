@@ -1,111 +1,86 @@
+/*
+  The reviewQueue is made up of kanji@reading strings
+  So are the maps and sets
+*/
 export class Reviewer {
-  private reviewWords: string[];
-  private reviewBatch: string[];
-  private wordsToFetch: string[];
-  private reviewQueue: ReviewEntry[];
-  private wordResults: WordLevelUpdate[] = [];
-  private reviewRecord: Map<string, ReviewRecordEntry>;
+  private reviewQueue: string[];
+  private halfDone: Map<string, "reading" | "meaning">;
+  private completed: Set<string>;
+  private failed: Set<string>;
+  private currentReviewType: "reading" | "meaning" = "reading";
 
-  public constructor(reviewWords: string[]) {
-    this.reviewBatch = reviewWords.slice(0, 10);
-    this.wordsToFetch = this.reviewBatch;
-    this.reviewWords = reviewWords.slice(10);
-    this.reviewRecord = this.setReviewRecord(
-      new Map<string, ReviewRecordEntry>()
-    );
-    this.reviewQueue = this.generateReviewQueue();
+  constructor(reviewQueue: string[]) {
+    this.reviewQueue = reviewQueue;
+    this.halfDone = new Map();
+    this.completed = new Set();
+    this.failed = new Set();
   }
 
-  private generateReviewQueue(): ReviewEntry[] {
-    const readingEntry: ReviewEntry[] = this.reviewBatch.map((wordPair) => ({
-      wordPair: wordPair,
-      answerType: "reading",
-    }));
-    const meaningEntry: ReviewEntry[] = this.reviewBatch.map((wordPair) => ({
-      wordPair: wordPair,
-      answerType: "meaning",
-    }));
-    return readingEntry.concat(meaningEntry).sort(() => Math.random() - 0.5);
-  }
+  /* 
+    Gets the first word in the queue and assigns the current review type.
+    Word is undefined if there are no words in the queue.
+  */
+  public GetCurrentReviewEntry(): {
+    word: string | undefined;
+    type: "reading" | "meaning";
+  } {
+    const word = this.reviewQueue.at(0);
+    if (!word) return { word: undefined, type: "reading" };
 
-  private setReviewRecord(
-    reviewRecord: Map<string, ReviewRecordEntry>
-  ): Map<string, ReviewRecordEntry> {
-    this.reviewBatch.forEach((wordPair) => {
-      reviewRecord.set(wordPair, {
-        meaningStatus: "pending",
-        readingStatus: "pending",
-      });
-    });
-    return reviewRecord;
-  }
-
-  public GetNextWord(): ReviewEntry | undefined {
-    return this.reviewQueue.pop();
-  }
-
-  public UpdateReviewRecord(
-    wordPair: string,
-    answerType: "meaning" | "reading",
-    status: "correct" | "incorrect"
-  ) {
-    const record = this.reviewRecord.get(wordPair);
-    if (record === undefined) {
-      throw new Error("Record not found");
-    }
-    if (answerType === "meaning") {
-      record.meaningStatus = status;
+    const halfDoneType = this.halfDone.get(word);
+    let reviewType: "reading" | "meaning";
+    if (halfDoneType) {
+      // If word has been half done, use the other type
+      reviewType = halfDoneType == "reading" ? "meaning" : "reading";
     } else {
-      record.readingStatus = status;
+      reviewType = Math.random() < 0.5 ? "reading" : "meaning";
     }
+    this.currentReviewType = reviewType;
 
-    this.reviewRecord.set(wordPair, record);
+    return { word, type: reviewType };
+  }
 
-    if (
-      record.meaningStatus !== "pending" &&
-      record.readingStatus !== "pending"
-    ) {
-      this.reviewBatch = this.reviewBatch.filter((word) => word !== wordPair);
-      this.wordResults.push({
-        word: wordPair,
-        levelUp:
-          record.meaningStatus === "correct" &&
-          record.readingStatus === "correct",
-      });
-      if (this.reviewBatch.length < 2) {
-        this.newBatch();
+  // Gets the second word in queue for advance data fetching purposes.
+  public GetNextReviewEntry(): string | undefined {
+    return this.reviewQueue.at(1);
+  }
+
+  private insertWord(word: string, position: number) {
+    this.reviewQueue.splice(position, 0, word);
+  }
+
+  private randomInt(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  // Shifts the queue
+  public GiveAnswer(correct: boolean) {
+    const word = this.reviewQueue.shift();
+    if (!word) throw new Error("No word to review");
+
+    if (correct) {
+      if (this.halfDone.has(word)) {
+        this.completed.add(word);
+        this.halfDone.delete(word);
+      } else {
+        this.halfDone.set(word, this.currentReviewType);
+
+        const insertPosition = this.randomInt(0, 4);
+        this.insertWord(word, insertPosition);
       }
+    } else {
+      this.failed.add(word);
+
+      const insertPosition = this.randomInt(3, 6);
+      this.insertWord(word, insertPosition);
     }
   }
 
-  private newBatch(): void {
-    this.reviewBatch = this.reviewBatch.concat(this.reviewWords.slice(0, 10));
-    this.wordsToFetch = this.reviewWords.slice(0, 10);
-    this.reviewWords = this.reviewWords.slice(10);
-    this.reviewRecord = this.setReviewRecord(this.reviewRecord);
-    this.reviewQueue = this.reviewQueue.concat(this.generateReviewQueue());
+  public GetCompleted(): Set<string> {
+    return this.completed;
   }
 
-  public GetWordsToFetch(): string[] {
-    return this.wordsToFetch;
-  }
-
-  public GetWordResults(): WordLevelUpdate[] {
-    return this.wordResults;
+  public GetFailed(): Set<string> {
+    return this.failed;
   }
 }
-
-type ReviewEntry = {
-  wordPair: string;
-  answerType: "meaning" | "reading";
-};
-
-type ReviewRecordEntry = {
-  meaningStatus: "correct" | "incorrect" | "pending";
-  readingStatus: "correct" | "incorrect" | "pending";
-};
-
-type WordLevelUpdate = {
-  word: string;
-  levelUp: boolean;
-};

@@ -11,7 +11,12 @@ export default function ReviewsScreen() {
   const reviewer = useRef<Reviewer | null>(null);
   const wordData = useRef<Map<string, WordData>>(new Map<string, WordData>());
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    (async () => {
+      const reviewQueue = await GetReviewQueue();
+      reviewer.current = new Reviewer(reviewQueue);
+    })();
+  }, []);
 
   return (
     <ThemedView style={styles.container}>
