@@ -3,9 +3,10 @@ import { ThemedView } from "@/components/themed/ThemedView";
 import { GetReviewQueue } from "@/functions/Storage";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { Button, StyleSheet } from "react-native";
-import { Reviewer, ReviewEntry } from "@/functions/Reviewer";
+import { StyleSheet } from "react-native";
+import { Reviewer } from "@/functions/Reviewer";
 import { WordData } from "@/types/Types";
+import { NamedField } from "@/components/logins/NamedField";
 
 export default function ReviewsScreen() {
   const reviewer = useRef<Reviewer | null>(null);
@@ -15,6 +16,8 @@ export default function ReviewsScreen() {
   const [displayType, setDisplayType] = useState<"reading" | "meaning">(
     "reading"
   );
+
+  const [userInput, setUserInput] = useState<string>("");
 
   const displayNextReview = (reviewer: Reviewer) => {
     const { word, type } = reviewer.GetCurrentReviewEntry();
@@ -35,10 +38,11 @@ export default function ReviewsScreen() {
       <ThemedText style={styles.text} type="title">
         {displayWord ?? "No words to review"}
       </ThemedText>
-      <ThemedText style={styles.text} type="subtitle">
-        {displayType}
-      </ThemedText>
-      <Button title="Correct" />
+      <NamedField
+        name={displayType}
+        fieldContent={userInput}
+        setFieldContent={setUserInput}
+      />
     </ThemedView>
   );
 }
