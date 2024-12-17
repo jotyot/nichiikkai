@@ -21,10 +21,10 @@ export class Reviewer {
     Word is undefined if there are no words in the queue.
   */
   public GetCurrentReviewEntry(): ReviewEntry {
-    const word = this.reviewQueue.at(0);
-    if (!word) return { word: undefined, type: "reading" };
+    const wordPair = this.reviewQueue.at(0);
+    if (!wordPair) return { wordPair: undefined, type: "reading" };
 
-    const halfDoneType = this.halfDone.get(word);
+    const halfDoneType = this.halfDone.get(wordPair);
     let reviewType: "reading" | "meaning";
     if (halfDoneType) {
       // If word has been half done, use the other type
@@ -34,7 +34,7 @@ export class Reviewer {
     }
     this.currentReviewType = reviewType;
 
-    return { word, type: reviewType };
+    return { wordPair: wordPair, type: reviewType };
   }
 
   // Gets the second word in queue for advance data fetching purposes.
@@ -42,8 +42,8 @@ export class Reviewer {
     return this.reviewQueue.at(1);
   }
 
-  private insertWord(word: string, position: number) {
-    this.reviewQueue.splice(position, 0, word);
+  private insertWord(wordPair: string, position: number) {
+    this.reviewQueue.splice(position, 0, wordPair);
   }
 
   private randomInt(min: number, max: number): number {
@@ -52,24 +52,24 @@ export class Reviewer {
 
   // Shifts the queue
   public GiveAnswer(correct: boolean) {
-    const word = this.reviewQueue.shift();
-    if (!word) throw new Error("No word to review");
+    const wordPair = this.reviewQueue.shift();
+    if (!wordPair) throw new Error("No word to review");
 
     if (correct) {
-      if (this.halfDone.has(word)) {
-        this.completed.add(word);
-        this.halfDone.delete(word);
+      if (this.halfDone.has(wordPair)) {
+        this.completed.add(wordPair);
+        this.halfDone.delete(wordPair);
       } else {
-        this.halfDone.set(word, this.currentReviewType);
+        this.halfDone.set(wordPair, this.currentReviewType);
 
         const insertPosition = this.randomInt(0, 4);
-        this.insertWord(word, insertPosition);
+        this.insertWord(wordPair, insertPosition);
       }
     } else {
-      this.failed.add(word);
+      this.failed.add(wordPair);
 
       const insertPosition = this.randomInt(3, 6);
-      this.insertWord(word, insertPosition);
+      this.insertWord(wordPair, insertPosition);
     }
   }
 
@@ -83,6 +83,6 @@ export class Reviewer {
 }
 
 export type ReviewEntry = {
-  word: string | undefined;
+  wordPair: string | undefined;
   type: "reading" | "meaning";
 };

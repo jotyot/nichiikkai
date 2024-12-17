@@ -63,12 +63,9 @@ export default function HomeScreen() {
           onPress={async () => {
             const wordBase = wordOfTheDayState.wordBase;
             await SetReviewQueue([
-              // wordBase.word +
-              //   "@" +
-              //   wordBase.reading,
-              "test1",
-              "test2",
-              "test3",
+              wordBase.word + "@" + wordBase.reading,
+              "腕@うで",
+              "世話@せわ",
             ]);
             router.replace("/reviews");
           }}

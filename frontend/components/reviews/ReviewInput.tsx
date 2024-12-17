@@ -29,6 +29,7 @@ export function ReviewInput({
     <ThemedTextInput
       value={input}
       onChangeText={handleTextChange}
+      onSubmitEditing={onSubmit}
       style={styles.textInput}
     />
   );
