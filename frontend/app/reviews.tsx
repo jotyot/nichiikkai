@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
 import { Reviewer } from "@/functions/Reviewer";
 import { WordData } from "@/types/Types";
-import { NamedField } from "@/components/logins/NamedField";
+import { ReviewInput } from "@/components/reviews/ReviewInput";
 
 export default function ReviewsScreen() {
   const reviewer = useRef<Reviewer | null>(null);
@@ -35,19 +35,24 @@ export default function ReviewsScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText style={styles.text} type="title">
+      <ThemedView style={styles.filler} />
+      <ThemedText style={styles.wordText} type="title">
         {displayWord ?? "No words to review"}
       </ThemedText>
-      <NamedField
-        name={displayType}
-        fieldContent={userInput}
-        setFieldContent={setUserInput}
+      <ThemedText style={styles.typeText} type="subtitle">
+        {displayType === "reading" ? "Reading" : "Meaning"}
+      </ThemedText>
+      <ReviewInput
+        input={userInput}
+        setInput={setUserInput}
+        onSubmit={() => {}}
+        type={displayType}
       />
     </ThemedView>
   );
 }
 
-export async function ExitReviews () {
+export async function ExitReviews() {
   router.replace("/(tabs)");
 }
 
@@ -55,10 +60,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
   },
-  text: {
-    fontSize: 24,
+  filler: {
+    height: 100,
+  },
+  wordText: {
+    fontSize: 50,
     marginVertical: 20,
+  },
+  typeText: {
+    fontSize: 25,
+    marginBottom: 20,
   },
 });
