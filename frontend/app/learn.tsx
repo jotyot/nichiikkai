@@ -31,14 +31,16 @@ export default function Learn() {
     if (!reviewer.current) throw new Error("No reviewer");
     setCorrectSet(reviewer.current.GetCompleted());
     setShowSummary(true);
-    if (correctSet.size === 0) return;
+    const completed = reviewer.current.GetCompleted();
+    if (completed.size === 0) return;
 
     const accessToken = (await GetAccessTokenResponse()).accessToken;
     await Promise.all(
-      Array.from(correctSet).map(async (word) => {
+      Array.from(completed).map(async (word) => {
         POSTAddUserWord(accessToken, ToWordPair(word));
       })
     );
+    await new Promise((r) => setTimeout(r, 1000));
     const userWords = await GETUserWords(accessToken);
     await SetUserWords(userWords);
   }

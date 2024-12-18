@@ -4,16 +4,11 @@ import { StyleSheet } from "react-native";
 import { ToWordPair } from "@/functions/Reviewer";
 
 export type SummaryEntryProps = {
-  key: number;
   correct: boolean;
   wordPair: string;
 };
 
-export default function SummaryEntry({
-  key,
-  correct,
-  wordPair,
-}: SummaryEntryProps) {
+export default function SummaryEntry({ correct, wordPair }: SummaryEntryProps) {
   const { word, reading } = ToWordPair(wordPair);
 
   return (
@@ -22,7 +17,6 @@ export default function SummaryEntry({
         styles.container,
         { backgroundColor: correct ? "seagreen" : "lightcoral" },
       ]}
-      key={key}
     >
       <ThemedText style={styles.text}>
         {word} ({reading})
