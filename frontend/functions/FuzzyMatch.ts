@@ -21,14 +21,12 @@ function levenshteinDistance(str1: string, str2: string): number {
   return dp[m][n];
 }
 
-export function FuzzyMatch(
-  input: string,
-  targets: string[],
-  threshold = 2
-): boolean {
+export function FuzzyMatch(input: string, targets: string[]): boolean {
   for (const target of targets) {
+    let threshold = input.length * 0.35;
     const distance = levenshteinDistance(input, target);
-    if (input.length === 1 && distance !== 0) return false;
+    if (input.length === 1) threshold = 0;
+    if (input.length === 2) threshold = 1;
     if (distance <= threshold) {
       return true;
     }

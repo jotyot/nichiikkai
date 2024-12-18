@@ -26,10 +26,13 @@ export default function ReviewsScreen() {
   >();
 
   const [userInput, setUserInput] = useState<string>("");
+  const [infoHidden, setInfoHidden] = useState<boolean>(true);
 
   const displayNextReview = async () => {
     if (!reviewer.current) throw new Error("No reviewer");
 
+    setUserInput("");
+    setInfoHidden(true);
     const { wordPair, type } = reviewer.current.GetCurrentReviewEntry();
 
     if (!wordPair) {
@@ -70,17 +73,18 @@ export default function ReviewsScreen() {
     if (reviewType === "reading") {
       return currentWordData.readings.includes(userInput);
     }
-    return FuzzyMatch(userInput, currentWordData.meanings, 2);
+    return FuzzyMatch(userInput, currentWordData.meanings);
   };
 
   const handleSubmit = async () => {
     if (!reviewer.current) throw new Error("No reviewer");
 
+    if (userInput === "") return;
     if (reviewType === "reading" && !isKana(userInput)) return;
 
     const correct = checkAnswer();
     console.log(correct);
-    setUserInput("");
+
     reviewer.current.GiveAnswer(correct);
     await displayNextReview();
   };
@@ -114,9 +118,11 @@ export default function ReviewsScreen() {
         onSubmit={handleSubmit}
         type={reviewType}
       />
-      <ThemedView style={styles.wordInfo}>
-        <ReviewInfo wordData={currentWordData} />
-      </ThemedView>
+      <ReviewInfo
+        wordData={currentWordData}
+        hidden={infoHidden}
+        setHidden={setInfoHidden}
+      />
     </ThemedView>
   );
 }
@@ -140,10 +146,5 @@ const styles = StyleSheet.create({
   typeText: {
     fontSize: 25,
     marginBottom: 20,
-  },
-  wordInfo: {
-    marginTop: 20,
-    alignItems: "flex-start",
-    width: "30%",
   },
 });

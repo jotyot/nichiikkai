@@ -80,6 +80,10 @@ export class Reviewer {
   public GetFailed(): Set<string> {
     return this.failed;
   }
+
+  public GetCorrect(): Set<string> {
+    return this.completed.difference(this.failed);
+  }
 }
 
 export type ReviewEntry = {

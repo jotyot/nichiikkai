@@ -64,8 +64,8 @@ export default function HomeScreen() {
             const wordBase = wordOfTheDayState.wordBase;
             await SetReviewQueue([
               wordBase.word + "@" + wordBase.reading,
-              "腕@うで",
-              "世話@せわ",
+              "後@のち",
+              "後@あと",
             ]);
             router.replace("/reviews");
           }}

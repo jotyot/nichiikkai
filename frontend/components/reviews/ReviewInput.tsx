@@ -1,6 +1,6 @@
 import { ThemedTextInput } from "../themed/ThemedTextInput";
 import { StyleSheet } from "react-native";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toKana } from "wanakana";
 
 export type ReviewInputProps = {
@@ -18,7 +18,10 @@ export function ReviewInput({
 }: ReviewInputProps) {
   const handleTextChange = (text: string) => {
     if (type === "reading") {
-      const kana = toKana(text);
+      const kana = toKana(text, {
+        IMEMode: true,
+        customKanaMapping: { n: "n" },
+      });
       setInput(kana);
     } else {
       setInput(text);
@@ -38,11 +41,11 @@ export function ReviewInput({
 const styles = StyleSheet.create({
   textInput: {
     textAlign: "center",
-    width: "100%",
+    width: 300,
     paddingVertical: 10,
-    borderColor: "gray",
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
+    borderColor: "white",
+    borderWidth: 1,
+    borderRadius: 10,
     fontSize: 20,
     height: 50,
   },
