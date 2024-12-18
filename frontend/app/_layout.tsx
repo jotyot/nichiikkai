@@ -5,10 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { TouchableOpacity } from "react-native";
-import { ExitReviews } from "./reviews";
-import ThemedText from "@/components/themed/ThemedText";
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -38,17 +35,8 @@ export default function RootLayout() {
         <Stack.Screen name="signing-in" options={{ headerShown: false }} />
         <Stack.Screen name="fetching-data" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="reviews"
-          options={{
-            title: "",
-            headerRight: () => (
-              <TouchableOpacity onPressIn={ExitReviews}>
-                <ThemedText>Exit</ThemedText>
-              </TouchableOpacity>
-            ),
-          }}
-        />
+        <Stack.Screen name="reviews" options={{ headerShown: false }} />
+        <Stack.Screen name="learn" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>

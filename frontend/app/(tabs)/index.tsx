@@ -62,12 +62,8 @@ export default function HomeScreen() {
         <LearnButton
           onPress={async () => {
             const wordBase = wordOfTheDayState.wordBase;
-            await SetReviewQueue([
-              wordBase.word + "@" + wordBase.reading,
-              "後@のち",
-              "後@あと",
-            ]);
-            router.replace("/reviews");
+            await SetReviewQueue([wordBase.word + "@" + wordBase.reading]);
+            router.replace("/learn");
           }}
         />
       )}

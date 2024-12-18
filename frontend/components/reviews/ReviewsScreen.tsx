@@ -1,11 +1,9 @@
 import ThemedText from "@/components/themed/ThemedText";
 import ThemedView from "@/components/themed/ThemedView";
-import { GetReviewQueue } from "@/functions/Storage";
-import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
-import { Reviewer } from "@/functions/Reviewer";
-import { WordData, WordPair } from "@/types/Types";
+import { Reviewer, ToWordPair } from "@/functions/Reviewer";
+import { WordData } from "@/types/Types";
 import ReviewInput from "@/components/reviews/ReviewInput";
 import { GETWordData } from "@/functions/APICalls";
 import ReviewInfo from "@/components/reviews/ReviewInfo";
@@ -13,11 +11,14 @@ import { FuzzyMatch } from "@/functions/FuzzyMatch";
 import { isKana } from "wanakana";
 
 export type ReviewsScreenProps = {
+  reviewer: React.MutableRefObject<Reviewer | undefined>;
   handleExit: () => Promise<void> | void;
 };
 
-export default function ReviewsScreen({ handleExit }: ReviewsScreenProps) {
-  const reviewer = useRef<Reviewer | undefined>();
+export default function ReviewsScreen({
+  handleExit,
+  reviewer,
+}: ReviewsScreenProps) {
   const wordDataMap = useRef<Map<string, WordData>>(new Map());
 
   const [displayWord, setDisplayWord] = useState<string | undefined>(undefined);
@@ -37,12 +38,11 @@ export default function ReviewsScreen({ handleExit }: ReviewsScreenProps) {
 
   useEffect(() => {
     (async () => {
-      const reviewQueue = await GetReviewQueue();
-      reviewer.current = new Reviewer(reviewQueue);
+      if (!reviewer.current) throw new Error("No reviewer");
 
       const { wordPair } = reviewer.current.GetCurrentReviewEntry();
       if (!wordPair) throw new Error("No words to review");
-      const wordData = await GETWordData(toWordPair(wordPair));
+      const wordData = await GETWordData(ToWordPair(wordPair));
       wordDataMap.current.set(wordPair, wordData);
 
       await displayNextReview();
@@ -75,7 +75,7 @@ export default function ReviewsScreen({ handleExit }: ReviewsScreenProps) {
 
     const nextWordPair = reviewer.current.GetNextReviewEntry();
     if (nextWordPair) {
-      const wordData = await GETWordData(toWordPair(nextWordPair));
+      const wordData = await GETWordData(ToWordPair(nextWordPair));
       wordDataMap.current.set(nextWordPair, wordData);
     }
   };
@@ -108,7 +108,7 @@ export default function ReviewsScreen({ handleExit }: ReviewsScreenProps) {
     <ThemedView style={styles.container}>
       <ThemedView style={styles.filler} />
       <ThemedText style={styles.wordText} type="title">
-        {displayWord ?? "NaN"}
+        {displayWord ?? "..."}
       </ThemedText>
       <ThemedText style={styles.typeText} type="subtitle">
         {reviewType === "reading" ? "Reading" : "Meaning"}
@@ -124,9 +124,7 @@ export default function ReviewsScreen({ handleExit }: ReviewsScreenProps) {
         wordData={currentWordData}
         hidden={infoHidden}
         setHidden={setInfoHidden}
-        onSubmit={
-          answerState === "incorrect" ? displayNextReview : handleSubmit
-        }
+        onSubmit={answerState !== "default" ? displayNextReview : handleSubmit}
         disabled={answerState === "default"}
       />
     </ThemedView>
@@ -139,7 +137,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   filler: {
-    height: 100,
+    height: 150,
   },
   wordText: {
     fontSize: 50,
@@ -151,12 +149,3 @@ const styles = StyleSheet.create({
   },
 });
 
-const toWordPair = (wordPair: string): WordPair => {
-  try {
-    const word = wordPair.split("@")[0];
-    const reading = wordPair.split("@")[1];
-    return { word, reading };
-  } catch (e) {
-    throw new Error("Invalid word pair");
-  }
-};

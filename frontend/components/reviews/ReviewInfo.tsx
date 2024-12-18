@@ -1,11 +1,8 @@
 import { WordData } from "@/types/Types";
 import ThemedText from "../themed/ThemedText";
 import ThemedView from "../themed/ThemedView";
-import { Collapsible } from "../Collapsible";
-import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import ThemedIonicons from "../themed/ThemedIonicons";
-import { useThemeColor } from "@/hooks/useThemeColor";
 
 export type ReviewInfoProps = {
   disabled?: boolean;
@@ -39,10 +36,13 @@ export default function ReviewInfo({
         {!hidden && (
           <ThemedView style={styles.textContainer}>
             <ThemedText style={styles.text}>
+              {"JLPT Level:   " + wordData?.wordBase.jlptLevel}
+            </ThemedText>
+            <ThemedText style={styles.text}>
               {"Meanings:   " + wordData?.meanings.join(", ")}
             </ThemedText>
             <ThemedText style={styles.text}>
-              {"Word Type:  " + wordData?.partsOfSpeech.join(", ")}
+              {"Word Type:   " + wordData?.partsOfSpeech.join(", ")}
             </ThemedText>
             <ThemedText style={styles.text}>
               {"Readings:   " + wordData?.readings.join(", ")}
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   icon: {
-    top: 5,
+    top: 6,
   },
   textContainer: {
     padding: 10,

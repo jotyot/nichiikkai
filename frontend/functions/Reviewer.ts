@@ -1,3 +1,5 @@
+import { WordPair } from "@/types/Types";
+
 /*
   The reviewQueue is made up of kanji@reading strings
   So are the maps and sets
@@ -82,7 +84,18 @@ export class Reviewer {
   }
 
   public GetCorrect(): Set<string> {
+    if (this.completed.size == 0) return new Set();
     return this.completed.difference(this.failed);
+  }
+}
+
+export function ToWordPair(wordPair: string): WordPair {
+  try {
+    const word = wordPair.split("@")[0];
+    const reading = wordPair.split("@")[1];
+    return { word, reading };
+  } catch (e) {
+    throw new Error("Invalid word pair");
   }
 }
 
