@@ -1,6 +1,6 @@
-import { ThemedText } from "../themed/ThemedText";
-import { ThemedTextInput } from "../themed/ThemedTextInput";
-import { ThemedView } from "../themed/ThemedView";
+import ThemedText from "../themed/ThemedText";
+import ThemedTextInput from "../themed/ThemedTextInput";
+import ThemedView from "../themed/ThemedView";
 import { StyleSheet } from "react-native";
 import { PasswordInput } from "./PasswordInput";
 

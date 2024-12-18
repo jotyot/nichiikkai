@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { ThemedView } from "@/components/themed/ThemedView";
+import ThemedView from "@/components/themed/ThemedView";
 import {
   GetLastWordDate,
   GetUserLevels,

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { ThemedTextInput } from "../themed/ThemedTextInput";
+import ThemedTextInput from "../themed/ThemedTextInput";
 import { TextInputProps, View, StyleSheet } from "react-native";
-import { ThemedIonicons } from "../themed/ThemedIonicons";
+import ThemedIonicons from "../themed/ThemedIonicons";
 
 export type PasswordInputProps = TextInputProps & {
   password: string;

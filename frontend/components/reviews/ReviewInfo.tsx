@@ -1,10 +1,10 @@
 import { WordData } from "@/types/Types";
-import { ThemedText } from "../themed/ThemedText";
-import { ThemedView } from "../themed/ThemedView";
+import ThemedText from "../themed/ThemedText";
+import ThemedView from "../themed/ThemedView";
 import { Collapsible } from "../Collapsible";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { ThemedIonicons } from "../themed/ThemedIonicons";
+import ThemedIonicons from "../themed/ThemedIonicons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
 export type ReviewInfoProps = {
@@ -15,7 +15,7 @@ export type ReviewInfoProps = {
   onSubmit: () => void;
 };
 
-export function ReviewInfo({
+export default function ReviewInfo({
   disabled = false,
   wordData,
   hidden,

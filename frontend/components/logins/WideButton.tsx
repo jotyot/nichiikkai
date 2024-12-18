@@ -1,5 +1,5 @@
 import { TouchableOpacity, StyleSheet } from "react-native";
-import { ThemedText } from "../themed/ThemedText";
+import ThemedText from "../themed/ThemedText";
 
 export type WideButtonProps = {
   text: string;

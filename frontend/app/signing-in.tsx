@@ -1,5 +1,5 @@
-import { ThemedText } from "@/components/themed/ThemedText";
-import { ThemedView } from "@/components/themed/ThemedView";
+import ThemedText from "@/components/themed/ThemedText";
+import ThemedView from "@/components/themed/ThemedView";
 import { POSTLogin } from "@/functions/APICalls";
 import { GetLoginInfo, SetAccessTokenResponse } from "@/functions/Storage";
 import { router } from "expo-router";
@@ -25,7 +25,7 @@ export default function SigningIn() {
         console.log(e);
         router.replace("/login");
       }
-    })()
+    })();
   }, []);
 
   return (

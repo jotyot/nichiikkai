@@ -8,7 +8,7 @@ export type ThemedTextProps = TextInputProps & {
   type?: "default" | "title" | "defaultSemiBold" | "subtitle" | "link";
 };
 
-export function ThemedTextInput({
+export default function ThemedTextInput({
   style,
   lightColor,
   darkColor,

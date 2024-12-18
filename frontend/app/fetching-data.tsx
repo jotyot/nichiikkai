@@ -1,5 +1,5 @@
-import { ThemedText } from "@/components/themed/ThemedText";
-import { ThemedView } from "@/components/themed/ThemedView";
+import ThemedText from "@/components/themed/ThemedText";
+import ThemedView from "@/components/themed/ThemedView";
 import { GETUserLevels, GETUserWords } from "@/functions/APICalls";
 import {
   GetAccessTokenResponse,

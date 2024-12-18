@@ -1,8 +1,8 @@
 import { WordData } from "@/types/Types";
 import { StyleSheet, Dimensions, SafeAreaView, ScrollView, StatusBar } from "react-native";
-import { ThemedText } from "../themed/ThemedText";
-import { ThemedView } from "../themed/ThemedView";
-import { ThemedLineDivider } from "../themed/ThemedLineDivider";
+import ThemedText from "../themed/ThemedText";
+import ThemedView from "../themed/ThemedView";
+import ThemedLineDivider from "../themed/ThemedLineDivider";
 
 export type WordDisplayProps = {
   word: WordData | null;

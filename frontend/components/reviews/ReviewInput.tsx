@@ -1,5 +1,5 @@
-import { ThemedTextInput } from "../themed/ThemedTextInput";
-import { ThemedView } from "../themed/ThemedView";
+import ThemedTextInput from "../themed/ThemedTextInput";
+import ThemedView from "../themed/ThemedView";
 import { StyleSheet } from "react-native";
 import { useRef, useState } from "react";
 import { toKana } from "wanakana";
@@ -13,7 +13,7 @@ export type ReviewInputProps = {
   state: "correct" | "incorrect" | "default";
 };
 
-export function ReviewInput({
+export default function ReviewInput({
   input,
   setInput,
   onSubmit,

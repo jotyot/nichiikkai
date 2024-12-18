@@ -1,7 +1,7 @@
 import { View, ViewProps, StyleSheet, TextStyle } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { ThemedText } from "./ThemedText";
-import { ThemedView } from "./ThemedView";
+import ThemedText from "./ThemedText";
+import ThemedView from "./ThemedView";
 
 export type ThemedViewProps = ViewProps & {
   lightColor?: string;
@@ -10,7 +10,7 @@ export type ThemedViewProps = ViewProps & {
   textStyle?: TextStyle;
 };
 
-export function ThemedLineDivider({
+export default function ThemedLineDivider({
   style,
   lightColor,
   darkColor,

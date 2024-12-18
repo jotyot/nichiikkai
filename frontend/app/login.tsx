@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { Link, router } from "expo-router";
-import { ThemedView } from "@/components/themed/ThemedView";
-import { ThemedText } from "@/components/themed/ThemedText";
+import ThemedView from "@/components/themed/ThemedView";
+import ThemedText from "@/components/themed/ThemedText";
 import { useState } from "react";
 import { SetAccessTokenResponse, SetLoginInfo } from "@/functions/Storage";
 import { NamedField } from "@/components/logins/NamedField";

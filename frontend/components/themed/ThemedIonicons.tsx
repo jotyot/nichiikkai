@@ -6,7 +6,7 @@ export type IoniconsProps = React.ComponentProps<typeof Ionicons> & {
   darkColor?: string;
 };
 
-export function ThemedIonicons({
+export default function ThemedIonicons({
   style,
   lightColor,
   darkColor,

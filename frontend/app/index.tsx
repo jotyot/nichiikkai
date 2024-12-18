@@ -1,5 +1,5 @@
-import { ThemedText } from "@/components/themed/ThemedText";
-import { ThemedView } from "@/components/themed/ThemedView";
+import ThemedText from "@/components/themed/ThemedText";
+import ThemedView from "@/components/themed/ThemedView";
 import { GetLoginInfo } from "@/functions/Storage";
 import { router } from "expo-router";
 import { useEffect } from "react";
