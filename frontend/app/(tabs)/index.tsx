@@ -16,17 +16,6 @@ import { LearnButton } from "@/components/learning/LearnButton";
 import { router } from "expo-router";
 import { GETWordData, GETWordOfTheDay } from "@/functions/APICalls";
 
-async function generateWordOfTheDay() {
-  const userLevels = await GetUserLevels();
-  const userWords = await GetUserWords();
-
-  const wordBase: WordBase = await GETWordOfTheDay(userLevels, userWords);
-  const chosenWordBase = await chooseWordBase(wordBase);
-  const data = await GETWordData(chosenWordBase);
-
-  return data;
-}
-
 // so it takes one day to get a new word of the day
 async function chooseWordBase(apiCallWordBase: WordBase): Promise<WordBase> {
   try {
@@ -48,6 +37,21 @@ export default function HomeScreen() {
     null
   );
 
+  const [learned, setLearned] = useState(false);
+
+  async function generateWordOfTheDay() {
+    const userLevels = await GetUserLevels();
+    const userWords = await GetUserWords();
+
+    const wordBase: WordBase = await GETWordOfTheDay(userLevels, userWords);
+    const chosenWordBase = await chooseWordBase(wordBase);
+    const data = await GETWordData(chosenWordBase);
+
+    setLearned(wordBase.id !== chosenWordBase.id);
+
+    return data;
+  }
+
   useEffect(() => {
     (async () => {
       const wordOfTheDay = await generateWordOfTheDay();
@@ -65,6 +69,7 @@ export default function HomeScreen() {
             await SetReviewQueue([wordBase.word + "@" + wordBase.reading]);
             router.replace("/learn");
           }}
+          disabled={learned}
         />
       )}
     </ThemedView>

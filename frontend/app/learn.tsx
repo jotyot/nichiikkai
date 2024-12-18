@@ -1,14 +1,16 @@
 import { router } from "expo-router";
 import ReviewsScreen from "@/components/reviews/ReviewsScreen";
 import { useEffect } from "react";
-import { GetReviewQueue } from "@/functions/Storage";
-import { Reviewer } from "@/functions/Reviewer";
+import { GetReviewQueue, SetUserWords } from "@/functions/Storage";
+import { Reviewer, ToWordPair } from "@/functions/Reviewer";
 import { useRef } from "react";
 import { useState } from "react";
 import ThemedView from "@/components/themed/ThemedView";
 import { StyleSheet } from "react-native";
 import ExitHeader from "@/components/learning/ExitHeader";
 import Summary from "@/components/learning/Summary";
+import { GetAccessTokenResponse } from "@/functions/Storage";
+import { GETUserWords, POSTAddUserWord } from "@/functions/APICalls";
 
 export default function Learn() {
   const reviewer = useRef<Reviewer>();
@@ -29,6 +31,16 @@ export default function Learn() {
     if (!reviewer.current) throw new Error("No reviewer");
     setCorrectSet(reviewer.current.GetCompleted());
     setShowSummary(true);
+    if (correctSet.size === 0) return;
+
+    const accessToken = (await GetAccessTokenResponse()).accessToken;
+    await Promise.all(
+      Array.from(correctSet).map(async (word) => {
+        POSTAddUserWord(accessToken, ToWordPair(word));
+      })
+    );
+    const userWords = await GETUserWords(accessToken);
+    await SetUserWords(userWords);
   }
 
   return !showSummary ? (

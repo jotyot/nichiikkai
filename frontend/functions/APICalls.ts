@@ -105,11 +105,11 @@ export async function PUTIncrementLevel(
   wordPair: WordPair
 ) {
   const response = await fetch(
-    "https://backend-image-952837685482.us-central1.run.app/NIK/words" +
+    "https://backend-image-952837685482.us-central1.run.app/NIK/words/" +
       wordPair.word +
       "/" +
       wordPair.reading +
-      "increment-level",
+      "/increment-level",
     {
       method: "PUT",
       headers: {
@@ -127,11 +127,11 @@ export async function PUTDecrementLevel(
   wordPair: WordPair
 ) {
   const response = await fetch(
-    "https://backend-image-952837685482.us-central1.run.app/NIK/words" +
+    "https://backend-image-952837685482.us-central1.run.app/NIK/words/" +
       wordPair.word +
       "/" +
       wordPair.reading +
-      "decrement-level",
+      "/decrement-level",
     {
       method: "PUT",
       headers: {
@@ -141,5 +141,23 @@ export async function PUTDecrementLevel(
   );
   if (response.status !== 200) {
     throw new Error("Failed to decrement level: " + response.status);
+  }
+}
+
+export async function POSTAddUserWord(accessToken: string, wordPair: WordPair) {
+  const response = await fetch(
+    "https://backend-image-952837685482.us-central1.run.app/NIK/words/" +
+      wordPair.word +
+      "/" +
+      wordPair.reading,
+    {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    }
+  );
+  if (response.status !== 200) {
+    throw new Error("Failed to add word: " + response.status);
   }
 }
