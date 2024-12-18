@@ -27,12 +27,16 @@ export default function ReviewsScreen() {
 
   const [userInput, setUserInput] = useState<string>("");
   const [infoHidden, setInfoHidden] = useState<boolean>(true);
+  const [answerState, setAnswerState] = useState<
+    "correct" | "incorrect" | "default"
+  >("default");
 
   const displayNextReview = async () => {
     if (!reviewer.current) throw new Error("No reviewer");
 
     setUserInput("");
     setInfoHidden(true);
+    setAnswerState("default");
     const { wordPair, type } = reviewer.current.GetCurrentReviewEntry();
 
     if (!wordPair) {
@@ -83,10 +87,13 @@ export default function ReviewsScreen() {
     if (reviewType === "reading" && !isKana(userInput)) return;
 
     const correct = checkAnswer();
-    console.log(correct);
-
+    setAnswerState(correct ? "correct" : "incorrect");
     reviewer.current.GiveAnswer(correct);
-    await displayNextReview();
+
+    if (correct) {
+      await new Promise((r) => setTimeout(r, 500));
+      await displayNextReview();
+    }
   };
 
   useEffect(() => {
@@ -117,11 +124,16 @@ export default function ReviewsScreen() {
         setInput={setUserInput}
         onSubmit={handleSubmit}
         type={reviewType}
+        state={answerState}
       />
       <ReviewInfo
         wordData={currentWordData}
         hidden={infoHidden}
         setHidden={setInfoHidden}
+        onSubmit={
+          answerState === "incorrect" ? displayNextReview : handleSubmit
+        }
+        disabled={answerState === "default"}
       />
     </ThemedView>
   );

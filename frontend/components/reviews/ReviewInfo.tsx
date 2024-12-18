@@ -5,23 +5,37 @@ import { Collapsible } from "../Collapsible";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { ThemedIonicons } from "../themed/ThemedIonicons";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 export type ReviewInfoProps = {
+  disabled?: boolean;
   wordData: WordData | undefined;
   hidden: boolean;
   setHidden: (hidden: boolean) => void;
+  onSubmit: () => void;
 };
 
-export function ReviewInfo({ wordData, hidden, setHidden }: ReviewInfoProps) {
+export function ReviewInfo({
+  disabled = false,
+  wordData,
+  hidden,
+  setHidden,
+  onSubmit,
+}: ReviewInfoProps) {
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={[styles.info, { height: hidden ? 40 : 200 }]}>
-        <ThemedIonicons
-          style={styles.icon}
-          name={hidden ? "eye-off" : "eye"}
-          size={24}
-          onPress={() => setHidden(!hidden)}
-        />
+        <ThemedView
+          style={styles.hideButton}
+          onTouchEnd={disabled ? () => {} : () => setHidden(!hidden)}
+        >
+          <ThemedIonicons
+            style={styles.icon}
+            name={disabled ? "ban" : hidden ? "eye-off" : "eye"}
+            size={24}
+          />
+        </ThemedView>
+
         {!hidden && (
           <ThemedView style={styles.textContainer}>
             <ThemedText style={styles.text}>
@@ -36,34 +50,28 @@ export function ReviewInfo({ wordData, hidden, setHidden }: ReviewInfoProps) {
           </ThemedView>
         )}
       </ThemedView>
+      <ThemedView style={styles.submitButton}>
+        <ThemedIonicons name="chevron-forward" size={24} onPress={onSubmit} />
+      </ThemedView>
     </ThemedView>
   );
-  // return wordData ? (
-  //   <ThemedView>
-  //     <Collapsible title="Meaning">
-  //       <ThemedText>{wordData.meanings.join(", ")}</ThemedText>
-  //       <ThemedText>Word Type</ThemedText>
-  //       {wordData.partsOfSpeech.map((part, index) => (
-  //         <ThemedText key={index}>{part}</ThemedText>
-  //       ))}
-  //     </Collapsible>
-
-  //     <Collapsible title="Reading">
-  //       {wordData.readings.map((reading, index) => (
-  //         <ThemedText key={index}>{reading}</ThemedText>
-  //       ))}
-  //     </Collapsible>
-  //   </ThemedView>
-  // ) : (
-  //   <ThemedText>Loading...</ThemedText>
-  // );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     paddingVertical: 10,
+    flexDirection: "row",
+  },
+  submitButton: {
+    width: 45,
+    height: 40,
+    marginLeft: 5,
+    borderWidth: 1,
+    borderColor: "white",
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
   info: {
     width: 300,
@@ -71,6 +79,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "white",
+  },
+  hideButton: {
+    width: "100%",
+    alignItems: "center",
+    borderRadius: 10,
   },
   icon: {
     top: 5,
