@@ -84,8 +84,7 @@ export class Reviewer {
   }
 
   public GetCorrect(): Set<string> {
-    if (this.completed.size == 0) return new Set();
-    return this.completed.difference(this.failed);
+    return new Set([...this.completed].filter((x) => !this.failed.has(x)));
   }
 }
 

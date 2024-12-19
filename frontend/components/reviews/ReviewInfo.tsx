@@ -3,6 +3,7 @@ import ThemedText from "../themed/ThemedText";
 import ThemedView from "../themed/ThemedView";
 import { StyleSheet, View } from "react-native";
 import ThemedIonicons from "../themed/ThemedIonicons";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 export type ReviewInfoProps = {
   disabled?: boolean;
@@ -19,16 +20,23 @@ export default function ReviewInfo({
   setHidden,
   onSubmit,
 }: ReviewInfoProps) {
+  const borderColor = "white";
+
   return (
     <ThemedView style={styles.container}>
-      <ThemedView style={[styles.info, { height: hidden ? 40 : 200 }]}>
+      <ThemedView
+        style={[
+          styles.info,
+          { height: hidden ? 40 : 200, borderColor: borderColor },
+        ]}
+      >
         <ThemedView
           style={styles.hideButton}
           onTouchEnd={disabled ? () => {} : () => setHidden(!hidden)}
         >
           <ThemedIonicons
             style={styles.icon}
-            name={disabled ? "ban" : hidden ? "eye-off" : "eye"}
+            name={disabled ? "lock-closed" : hidden ? "eye-off" : "eye"}
             size={24}
           />
         </ThemedView>
@@ -50,7 +58,7 @@ export default function ReviewInfo({
           </ThemedView>
         )}
       </ThemedView>
-      <ThemedView style={styles.submitButton}>
+      <ThemedView style={[styles.submitButton, { borderColor: borderColor }]}>
         <ThemedIonicons name="chevron-forward" size={24} onPress={onSubmit} />
       </ThemedView>
     </ThemedView>
@@ -68,7 +76,6 @@ const styles = StyleSheet.create({
     height: 40,
     marginLeft: 5,
     borderWidth: 1,
-    borderColor: "white",
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
@@ -78,7 +85,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "white",
   },
   hideButton: {
     width: "100%",

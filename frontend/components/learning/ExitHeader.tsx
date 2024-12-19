@@ -9,13 +9,8 @@ export type ExitHeaderProps = {
 export default function ExitHeader({ handleExit }: ExitHeaderProps) {
   return (
     <ThemedView style={styles.header}>
-      <ThemedView style={styles.exitButton}>
-        <ThemedIonicons
-          name="close"
-          size={24}
-          color="white"
-          onPress={handleExit}
-        />
+      <ThemedView style={styles.exitButton} onTouchEnd={handleExit}>
+        <ThemedIonicons name="close" size={25} />
       </ThemedView>
     </ThemedView>
   );

@@ -17,6 +17,7 @@ export default function Learn() {
   const [reviewLoaded, setReviewLoaded] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [correctSet, setCorrectSet] = useState(new Set<string>());
+  const [summaryExitLock, setSummaryExitLock] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -24,25 +25,31 @@ export default function Learn() {
       reviewer.current = new Reviewer(reviewQueue);
       setReviewLoaded(true);
     })();
-  });
+  }, []);
 
   async function ExitLearning() {
     if (!reviewLoaded) return;
     if (!reviewer.current) throw new Error("No reviewer");
-    setCorrectSet(reviewer.current.GetCompleted());
-    setShowSummary(true);
+
     const completed = reviewer.current.GetCompleted();
-    if (completed.size === 0) return;
+    if (completed.size === 0) {
+      router.replace("/(tabs)");
+      return;
+    }
+
+    setCorrectSet(completed);
+    setShowSummary(true);
 
     const accessToken = (await GetAccessTokenResponse()).accessToken;
     await Promise.all(
-      Array.from(completed).map(async (word) => {
+      Array.from(completed).map((word) => {
         POSTAddUserWord(accessToken, ToWordPair(word));
       })
     );
     await new Promise((r) => setTimeout(r, 1000));
     const userWords = await GETUserWords(accessToken);
     await SetUserWords(userWords);
+    setSummaryExitLock(false);
   }
 
   return !showSummary ? (
@@ -53,7 +60,12 @@ export default function Learn() {
       )}
     </ThemedView>
   ) : (
-    <Summary correctSet={correctSet} incorrectSet={new Set()} mode="learn" />
+    <Summary
+      correctSet={correctSet}
+      incorrectSet={new Set()}
+      mode="learn"
+      lock={summaryExitLock}
+    />
   );
 }
 

@@ -65,8 +65,12 @@ export default function ReviewsScreen({
     const word = wordPair?.split("@")[0];
     setDisplayWord(word);
     setReviewType(type);
-    if (wordPair) setCurrentWordData(wordDataMap.current.get(wordPair));
-
+    if (wordPair) {
+      const wordData = wordDataMap.current.get(wordPair);
+      if (wordData)
+        wordData.meanings = [...wordData.meanings, wordData.wordBase.meaning];
+      setCurrentWordData(wordData);
+    }
     await loadNextWordData();
   };
 
@@ -85,6 +89,7 @@ export default function ReviewsScreen({
     if (reviewType === "reading") {
       return currentWordData.readings.includes(userInput);
     }
+
     return FuzzyMatch(userInput, currentWordData.meanings);
   };
 

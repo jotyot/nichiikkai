@@ -32,6 +32,8 @@ export default function ReviewInput({
     }
   };
 
+  const borderColor = "white";
+
   return (
     <ThemedTextInput
       editable={state === "default" || state === "correct"}
@@ -48,6 +50,7 @@ export default function ReviewInput({
               ? "seagreen"
               : "lightcoral",
         },
+        { borderColor: borderColor },
       ]}
     />
   );
@@ -58,7 +61,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     width: 350,
     paddingVertical: 10,
-    borderColor: "white",
     borderWidth: 1,
     borderRadius: 10,
     fontSize: 20,

@@ -9,12 +9,14 @@ export type SummaryProps = {
   correctSet: Set<string>;
   incorrectSet: Set<string>;
   mode: "learn" | "review";
+  lock: boolean;
 };
 
 export default function Summary({
   correctSet,
   incorrectSet,
   mode,
+  lock,
 }: SummaryProps) {
   return (
     <ThemedView style={styles.container}>
@@ -39,9 +41,14 @@ export default function Summary({
       </ThemedView>
       <ThemedView
         style={styles.exitButton}
-        onTouchEnd={() => router.replace("/(tabs)")}
+        onTouchEnd={
+          lock
+            ? () => {}
+            : () =>
+                router.replace(mode === "learn" ? "/(tabs)" : "/(tabs)/review")
+        }
       >
-        <ThemedIonicons name="close" size={30} />
+        <ThemedIonicons name={lock ? "lock-closed" : "close"} size={30} />
       </ThemedView>
     </ThemedView>
   );
