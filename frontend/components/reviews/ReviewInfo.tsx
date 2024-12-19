@@ -20,16 +20,9 @@ export default function ReviewInfo({
   setHidden,
   onSubmit,
 }: ReviewInfoProps) {
-  const borderColor = "white";
-
   return (
     <ThemedView style={styles.container}>
-      <ThemedView
-        style={[
-          styles.info,
-          { height: hidden ? 40 : 200, borderColor: borderColor },
-        ]}
-      >
+      <ThemedView style={[styles.info, { height: hidden ? 40 : 200 }]}>
         <ThemedView
           style={styles.hideButton}
           onTouchEnd={disabled ? () => {} : () => setHidden(!hidden)}
@@ -58,7 +51,7 @@ export default function ReviewInfo({
           </ThemedView>
         )}
       </ThemedView>
-      <ThemedView style={[styles.submitButton, { borderColor: borderColor }]}>
+      <ThemedView style={styles.submitButton}>
         <ThemedIonicons name="chevron-forward" size={24} onPress={onSubmit} />
       </ThemedView>
     </ThemedView>

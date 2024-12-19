@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
     width: 150,
     height: 50,
     borderWidth: 1,
-    borderColor: "white",
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",

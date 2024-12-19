@@ -7,10 +7,7 @@ export type ReviewForecastProps = {
   reviewCountMap: Map<number, number>;
 };
 
-export default function ReviewForecast({
-  reviewCountMap,
-}: ReviewForecastProps) {
-  const borderColor = "white";
+export default function ReviewForecast({ reviewCountMap }: ReviewForecastProps) {
   const day = new Date().getDay();
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const xAxis = weekDays.slice(day + 1).concat(weekDays.slice(0, day + 1));
@@ -23,7 +20,7 @@ export default function ReviewForecast({
   const maxCount = Math.max(...yAxis);
 
   return (
-    <ThemedView style={[styles.container, { borderColor: borderColor }]}>
+    <ThemedView style={styles.container}>
       <ThemedText style={styles.title} type="title">
         Upcoming
       </ThemedText>
@@ -40,7 +37,6 @@ export default function ReviewForecast({
                 {
                   height: `${(count / maxCount) * 77}%`,
                   borderWidth: count < 1 ? 0 : 0.5,
-                  borderColor: borderColor,
                 },
               ]}
             />

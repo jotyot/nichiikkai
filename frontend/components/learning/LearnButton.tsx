@@ -1,5 +1,6 @@
 import { TouchableOpacity, StyleSheet } from "react-native";
 import ThemedText from "../themed/ThemedText";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 export type LearnButtonProps = {
   disabled?: boolean;
@@ -7,9 +8,14 @@ export type LearnButtonProps = {
 };
 
 export function LearnButton({ onPress, disabled }: LearnButtonProps) {
+  const borderColor = useThemeColor({}, "text");
+
   return (
     <TouchableOpacity
-      style={[styles.button, { backgroundColor: disabled ? "gray" : "salmon" }]}
+      style={[
+        styles.button,
+        { backgroundColor: disabled ? "gray" : "salmon", borderColor },
+      ]}
       onPress={onPress}
       activeOpacity={0.8}
       disabled={disabled}
@@ -30,7 +36,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
-    borderColor: "white",
     borderWidth: 1,
   },
   text: {},

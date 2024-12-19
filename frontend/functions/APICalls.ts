@@ -161,3 +161,27 @@ export async function POSTAddUserWord(accessToken: string, wordPair: WordPair) {
     throw new Error("Failed to add word: " + response.status);
   }
 }
+
+export async function GETWords(
+  levels: string[] = [],
+  page: number = 1,
+  jlptOrder: string = "ascending",
+  orderBy: string = "alphabetical"
+) {
+  const response = await fetch(
+    "https://dictionary-952837685482.us-west1.run.app/Dictionary/" +
+      (levels.length && "?levels=" + levels.join("&levels=")) +
+      "&page=" +
+      page +
+      "&jlptOrder=" +
+      jlptOrder +
+      "&orderBy=" +
+      orderBy
+  );
+  if (response.status === 200) {
+    const data: WordBase[] = await response.json();
+    return data;
+  } else {
+    throw new Error("Failed to get word data: code " + response.status);
+  }
+}

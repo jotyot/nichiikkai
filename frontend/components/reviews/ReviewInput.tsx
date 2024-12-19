@@ -32,8 +32,6 @@ export default function ReviewInput({
     }
   };
 
-  const borderColor = "white";
-
   return (
     <ThemedTextInput
       editable={state === "default" || state === "correct"}
@@ -50,7 +48,6 @@ export default function ReviewInput({
               ? "seagreen"
               : "lightcoral",
         },
-        { borderColor: borderColor },
       ]}
     />
   );
