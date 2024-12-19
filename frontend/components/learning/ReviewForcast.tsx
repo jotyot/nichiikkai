@@ -12,7 +12,7 @@ export default function ReviewForecast({
 }: ReviewForecastProps) {
   const borderColor = "white";
   const day = new Date().getDay();
-  const weekDays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+  const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const xAxis = weekDays.slice(day + 1).concat(weekDays.slice(0, day + 1));
 
   const yAxis = Array.from({ length: 7 }, (_, i) => {
