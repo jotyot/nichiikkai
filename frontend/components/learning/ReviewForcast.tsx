@@ -22,31 +22,32 @@ export default function ReviewForecast({
 
   const maxCount = Math.max(...yAxis);
 
-  useEffect(() => {
-    console.log(yAxis);
-  }, []);
-
   return (
     <ThemedView style={[styles.container, { borderColor: borderColor }]}>
-      {yAxis.map((count, i) => (
-        <ThemedView key={i} style={styles.barContainer}>
-          <ThemedText style={styles.dayLabel}>
-            {count > 0 ? count : ""}
-          </ThemedText>
-          <ThemedView
-            key={i}
-            style={[
-              styles.bar,
-              {
-                height: `${(count / maxCount) * 80}%`,
-                borderWidth: count < 1 ? 0 : 0.5,
-                borderColor: borderColor,
-              },
-            ]}
-          />
-          <ThemedText style={styles.dayLabel}>{xAxis[i]}</ThemedText>
-        </ThemedView>
-      ))}
+      <ThemedText style={styles.title} type="title">
+        Upcoming
+      </ThemedText>
+      <ThemedView style={styles.graphContainer}>
+        {yAxis.map((count, i) => (
+          <ThemedView key={i} style={styles.barContainer}>
+            <ThemedText style={styles.countLabel}>
+              {count > 0 ? count : ""}
+            </ThemedText>
+            <ThemedView
+              key={i}
+              style={[
+                styles.bar,
+                {
+                  height: `${(count / maxCount) * 77}%`,
+                  borderWidth: count < 1 ? 0 : 0.5,
+                  borderColor: borderColor,
+                },
+              ]}
+            />
+            <ThemedText style={styles.dayLabel}>{xAxis[i]}</ThemedText>
+          </ThemedView>
+        ))}
+      </ThemedView>
     </ThemedView>
   );
 }
@@ -57,12 +58,20 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 10,
     borderWidth: 1,
-    flexDirection: "row",
-    alignItems: "flex-end",
-    justifyContent: "space-around",
+    alignItems: "center",
     marginVertical: 10,
     paddingHorizontal: 10,
     paddingVertical: 5,
+  },
+  title: {
+    fontSize: 20,
+  },
+  graphContainer: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "space-around",
+    height: "85%",
   },
   barContainer: {
     width: "11%",
@@ -75,6 +84,9 @@ const styles = StyleSheet.create({
   },
   dayLabel: {
     fontSize: 12,
-    marginTop: 5,
+    marginTop: 6,
+  },
+  countLabel: {
+    fontSize: 12,
   },
 });
