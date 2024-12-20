@@ -21,6 +21,7 @@ export default function ThemedTextInput({
     <TextInput
       style={[
         { color },
+        { borderColor: color },
         type === "default" ? styles.default : undefined,
         type === "title" ? styles.title : undefined,
         type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,

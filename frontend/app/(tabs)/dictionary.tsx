@@ -1,29 +1,23 @@
 import ThemedView from "@/components/themed/ThemedView";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { GetUserLevels } from "@/functions/Storage";
-import { StyleSheet } from "react-native";
+import { StyleSheet, SafeAreaView, VirtualizedList } from "react-native";
 import CheckBox from "@/components/dictionary/Checkbox";
 import { GETWords } from "@/functions/APICalls";
 import { WordBase } from "@/types/Types";
 import DictionaryEntry from "@/components/dictionary/DictionaryEntry";
+import DictionaryLabel from "@/components/dictionary/DictionaryLabel";
 
 export default function Dictionary() {
   const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
-  const [word, setWord] = useState<WordBase | null>(null);
+  const [words, setWords] = useState<WordBase[]>([]);
 
   useEffect(() => {
     (async () => {
       const userLevels = await GetUserLevels();
       setSelectedLevels(userLevels);
-      const word: WordBase = {
-        frequencyRank: 17993,
-        id: 3249,
-        jlptLevel: "N2",
-        meaning: "place of origin",
-        reading: "げんさん",
-        word: "原産",
-      };
-      setWord(word);
+      const words = await GETWords(userLevels);
+      setWords(words);
     })();
   }, []);
 
@@ -45,10 +39,22 @@ export default function Dictionary() {
           />
         ))}
       </ThemedView>
-      {word && <DictionaryEntry wordBase={word} />}
+      <DictionaryLabel />
+      <SafeAreaView style={styles.wordContainer}>
+        <VirtualizedList
+          data={words}
+          initialNumToRender={20}
+          renderItem={({ item }) => <OptimizedEntry wordBase={item} />}
+          keyExtractor={(item: WordBase) => item.word}
+          getItemCount={() => words.length}
+          getItem={(data, index) => data[index]}
+        ></VirtualizedList>
+      </SafeAreaView>
     </ThemedView>
   );
 }
+
+const OptimizedEntry = memo(DictionaryEntry);
 
 const styles = StyleSheet.create({
   container: {
@@ -65,5 +71,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     width: 350,
+  },
+  wordContainer: {
+    height: 500,
   },
 });
