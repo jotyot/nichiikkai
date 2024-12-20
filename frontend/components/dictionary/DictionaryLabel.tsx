@@ -21,17 +21,17 @@ export default function DictionaryLabel() {
   );
 }
 
-const rankLabelWidth = 93;
+const rankLabelWidth = 94;
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    borderBottomWidth: 1,
     padding: 5,
   },
   text: {
     margin: 2,
     fontSize: 13,
+    fontWeight: "bold",
   },
   level: {
     width: levelWidth,

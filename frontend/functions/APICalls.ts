@@ -168,9 +168,13 @@ export async function GETWords(
   jlptOrder: string = "ascending",
   orderBy: string = "alphabetical"
 ) {
+  if (levels.length === 0) {
+    levels = ["N1", "N2", "N3", "N4", "N5"];
+  }
   const response = await fetch(
     "https://dictionary-952837685482.us-west1.run.app/Dictionary/" +
-      (levels.length && "?levels=" + levels.join("&levels=")) +
+      "?levels=" +
+      levels.join("&levels=") +
       "&page=" +
       page +
       "&jlptOrder=" +
