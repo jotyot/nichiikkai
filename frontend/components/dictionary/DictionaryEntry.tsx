@@ -37,7 +37,7 @@ export default function DictionaryEntry({ wordBase }: DictonaryEntryProps) {
         {wordBase.meaning}
       </ThemedText>
       <ThemedText style={[styles.text, { width: rank > 0 ? rankWidth : 0 }]}>
-        {wordBase.frequencyRank}
+        {rank > 0 ? rank : ""}
       </ThemedText>
     </ThemedView>
   );

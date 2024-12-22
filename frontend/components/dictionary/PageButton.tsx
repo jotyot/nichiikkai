@@ -1,6 +1,7 @@
 import ThemedText from "../themed/ThemedText";
 import ThemedView from "../themed/ThemedView";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 export type PageButtonProps = {
   onPress: () => void;
@@ -13,13 +14,16 @@ export default function PageButton({
   title,
   disabled = false,
 }: PageButtonProps) {
+  const borderColor = useThemeColor({}, "text");
+
   return (
-    <ThemedView
-      style={[styles.container, { borderWidth: disabled ? 0 : 1 }]}
-      onTouchEnd={disabled ? () => {} : onPress}
+    <TouchableOpacity
+      style={[styles.container, { borderColor, borderWidth: disabled ? 0 : 1 }]}
+      onPress={disabled ? () => {} : onPress}
+      activeOpacity={0.8}
     >
       <ThemedText style={styles.text}>{disabled ? "" : title}</ThemedText>
-    </ThemedView>
+    </TouchableOpacity>
   );
 }
 

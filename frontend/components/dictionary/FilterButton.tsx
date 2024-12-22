@@ -1,6 +1,6 @@
+import { useThemeColor } from "@/hooks/useThemeColor";
 import ThemedText from "../themed/ThemedText";
-import ThemedView from "../themed/ThemedView";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 export type FilterButtonProps = {
   onPress: () => void;
@@ -15,10 +15,16 @@ export default function FilterButton({
   value,
   width,
 }: FilterButtonProps) {
+  const borderColor = useThemeColor({}, "text");
+
   return (
-    <ThemedView style={[styles.container, { width }]} onTouchEnd={onPress}>
+    <TouchableOpacity
+      style={[styles.container, { width, borderColor }]}
+      onPress={onPress}
+      activeOpacity={0.8}
+    >
       <ThemedText style={styles.text}>{title + value}</ThemedText>
-    </ThemedView>
+    </TouchableOpacity>
   );
 }
 

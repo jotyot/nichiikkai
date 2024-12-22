@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   logoutButton: {
-    borderWidth: 1,
+    borderWidth: 0,
     backgroundColor: "blue",
   },
   filler: {
