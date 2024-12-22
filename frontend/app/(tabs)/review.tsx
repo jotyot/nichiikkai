@@ -76,7 +76,7 @@ export default function ReviewHomeScreen() {
           styles.reviewButton,
           {
             borderColor: borderColor,
-            backgroundColor: reviewCount === 0 ? "gray" : "teal",
+            backgroundColor: reviewCount === 0 ? "gray" : "salmon",
           },
         ]}
         onTouchEnd={handleReviewButton}

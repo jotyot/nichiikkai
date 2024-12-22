@@ -81,6 +81,23 @@ export async function GETUserLevels(accessToken: string) {
   }
 }
 
+export async function PUTUserLevels(accessToken: string, levels: string[]) {
+  const response = await fetch(
+    "https://backend-image-952837685482.us-central1.run.app/NIK/selected-levels",
+    {
+      method: "PUT",
+      headers: {
+        Authorization: "Bearer " + accessToken,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(levels),
+    }
+  );
+  if (response.status !== 200) {
+    throw new Error("Failed to update user levels: " + response.status);
+  }
+}
+
 export async function POSTLogin(username: string, password: string) {
   const response = await fetch(
     "https://backend-image-952837685482.us-central1.run.app/identity/login",

@@ -9,7 +9,7 @@ import DictionaryEntry from "@/components/dictionary/DictionaryEntry";
 import DictionaryLabel from "@/components/dictionary/DictionaryLabel";
 import EmptyDictionary from "@/components/dictionary/EmptyDictionary";
 import FilterButton from "@/components/dictionary/FilterButton";
-import SearchButton from "@/components/dictionary/SearchButton";
+import SearchButton from "@/components/dictionary/WideButton";
 import ThemedText from "@/components/themed/ThemedText";
 import PageButton from "@/components/dictionary/PageButton";
 
@@ -78,6 +78,7 @@ export default function Dictionary() {
         />
       </ThemedView>
       <SearchButton
+        text={"Search"}
         onPress={() => {
           setPage(1);
           search();
@@ -133,12 +134,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     width: 350,
+    margin: 5,
   },
   filterContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginVertical: 10,
+    marginVertical: 5,
     width: 350,
   },
   wordContainer: {
@@ -151,7 +153,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginVertical: 10,
+    marginTop: 10,
     width: 350,
   },
 });
