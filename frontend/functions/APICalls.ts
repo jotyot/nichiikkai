@@ -129,8 +129,6 @@ export async function POSTRegister(username: string, password: string) {
     }
   );
   if (response.status === 200) {
-    const data: AccessTokenResponse = await response.json();
-    return data;
   } else {
     const data = await response.json();
     throw new Error("Failed to register: " + response.status, {

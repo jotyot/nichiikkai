@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import NamedField from "@/components/logins/NamedField";
 import WideButton from "@/components/dictionary/WideButton";
 import { router } from "expo-router";
-import { POSTRegister } from "@/functions/APICalls";
+import { POSTRegister, POSTLogin } from "@/functions/APICalls";
 import { SetAccessTokenResponse, SetLoginInfo } from "@/functions/Storage";
 
 export default function Register() {
@@ -21,13 +21,14 @@ export default function Register() {
   const handleRegister = async () => {
     try {
       setRegistering(true);
-      const response = await POSTRegister(username, password.trim());
+      await POSTRegister(username.trim(), password.trim());
+      const response = await POSTLogin(username.trim(), password.trim());
       await Promise.all([
-        SetLoginInfo(username, password.trim()),
+        SetLoginInfo(username.trim(), password.trim()),
         SetAccessTokenResponse(response),
       ]);
-      router.replace("/fetching-data");
-    } catch ({ cause }: any) {
+      router.replace("/select-levels");
+    } catch ({ message, cause }: any) {
       const errors = Object.values(cause.errors).flat() as string[];
       setRegisterErrors(errors);
     } finally {
@@ -45,9 +46,9 @@ export default function Register() {
 
   useEffect(() => {
     if (
-      username !== "" &&
-      password !== "" &&
-      confirmPassword !== "" &&
+      username.trim() !== "" &&
+      password.trim() !== "" &&
+      confirmPassword.trim() !== "" &&
       !notMatching
     ) {
       setRegistering(false);

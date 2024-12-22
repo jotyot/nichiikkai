@@ -17,9 +17,9 @@ export default function Login() {
   const handleSignin = async () => {
     try {
       setSigningIn(true);
-      const response = await POSTLogin(username, password);
+      const response = await POSTLogin(username.trim(), password.trim());
       await Promise.all([
-        SetLoginInfo(username, password),
+        SetLoginInfo(username.trim(), password.trim()),
         SetAccessTokenResponse(response),
       ]);
       router.replace("/fetching-data");
@@ -32,7 +32,7 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (username !== "" && password !== "") {
+    if (username.trim() !== "" && password.trim() !== "") {
       setSigningIn(false);
     } else {
       setSigningIn(true);

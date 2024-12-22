@@ -14,11 +14,7 @@ import { WordBase, WordData } from "@/types/Types";
 import { WordDisplay } from "@/components/learning/WordDisplay";
 import { LearnButton } from "@/components/learning/LearnButton";
 import { router } from "expo-router";
-import {
-  GETUserWords,
-  GETWordData,
-  GETWordOfTheDay,
-} from "@/functions/APICalls";
+import { GETWordData, GETWordOfTheDay } from "@/functions/APICalls";
 
 // so it takes one day to get a new word of the day
 async function chooseWordBase(apiCallWordBase: WordBase): Promise<WordBase> {
