@@ -117,6 +117,28 @@ export async function POSTLogin(username: string, password: string) {
   }
 }
 
+export async function POSTRegister(username: string, password: string) {
+  const response = await fetch(
+    "https://backend-image-952837685482.us-central1.run.app/identity/register",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: username, password: password }),
+    }
+  );
+  if (response.status === 200) {
+    const data: AccessTokenResponse = await response.json();
+    return data;
+  } else {
+    const data = await response.json();
+    throw new Error("Failed to register: " + response.status, {
+      cause: data,
+    });
+  }
+}
+
 export async function PUTIncrementLevel(
   accessToken: string,
   wordPair: WordPair

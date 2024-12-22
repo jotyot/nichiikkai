@@ -2,10 +2,10 @@ import { StyleSheet } from "react-native";
 import { Link, router } from "expo-router";
 import ThemedView from "@/components/themed/ThemedView";
 import ThemedText from "@/components/themed/ThemedText";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SetAccessTokenResponse, SetLoginInfo } from "@/functions/Storage";
-import { NamedField } from "@/components/logins/NamedField";
-import { WideButton } from "@/components/logins/WideButton";
+import NamedField from "@/components/logins/NamedField";
+import WideButton from "@/components/dictionary/WideButton";
 import { POSTLogin } from "@/functions/APICalls";
 
 export default function Login() {
@@ -31,6 +31,14 @@ export default function Login() {
     }
   };
 
+  useEffect(() => {
+    if (username !== "" && password !== "") {
+      setSigningIn(false);
+    } else {
+      setSigningIn(true);
+    }
+  }, [username, password]);
+
   return (
     <ThemedView style={styles.container}>
       <ThemedText style={styles.text} type="title">
@@ -52,7 +60,12 @@ export default function Login() {
           Incorrect email or password.
         </ThemedText>
       )}
-      <WideButton text="Sign in" onPress={handleSignin} inactive={signingIn} />
+      <WideButton
+        text="Sign in"
+        onPress={handleSignin}
+        disabled={signingIn}
+        style={styles.loginButton}
+      />
       <ThemedText>
         Don't have an account?{" "}
         <Link href="/register">
@@ -72,5 +85,11 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 24,
     marginVertical: 20,
+  },
+  loginButton: {
+    backgroundColor: "blue",
+    marginTop: 40,
+    borderWidth: 0,
+    marginBottom: 10,
   },
 });

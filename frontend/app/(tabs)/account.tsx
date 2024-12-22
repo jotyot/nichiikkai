@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import CheckBox from "@/components/dictionary/Checkbox";
 import { GetUserLevels } from "@/functions/Storage";
 import { GETUserLevels, PUTUserLevels } from "@/functions/APICalls";
+import LevelSelection from "@/components/dictionary/LevelSelection";
 
 export default function Account() {
   const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
@@ -41,29 +42,17 @@ export default function Account() {
       <ThemedText style={styles.text}>
         Change the levels you want to study.
       </ThemedText>
-      <ThemedView style={styles.levelContainer}>
-        {["N1", "N2", "N3", "N4", "N5"].map((level, i) => (
-          <CheckBox
-            key={i}
-            label={level}
-            on={selectedLevels.includes(level)}
-            onChange={(value) => {
-              setSelectedLevels((prev) =>
-                value
-                  ? [...prev, level]
-                  : prev.filter((selected) => selected !== level)
-              );
-              setShowUpdated(false);
-            }}
-          />
-        ))}
-      </ThemedView>
+      <LevelSelection
+        selectedLevels={selectedLevels}
+        setSelectedLevels={setSelectedLevels}
+      />
       {showUpdated && <ThemedText>Levels updated!</ThemedText>}
       <WideButton
         text="Update"
         onPress={handleLevelUpdate}
         disabled={updateButtonDisabled}
       />
+      <ThemedView style={styles.filler} />
       <WideButton
         text="Log out"
         onPress={async () => {
@@ -82,20 +71,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  levelContainer: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 5,
-    borderRadius: 10,
-    borderWidth: 1,
-    width: 350,
-    margin: 5,
-  },
   text: {
     textAlign: "center",
   },
   logoutButton: {
     backgroundColor: "blue",
+  },
+  filler: {
+    height: 200,
   },
 });

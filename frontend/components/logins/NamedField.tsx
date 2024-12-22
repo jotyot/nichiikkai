@@ -11,7 +11,7 @@ export type NamedFieldProps = {
   canHide?: boolean;
 };
 
-export function NamedField({
+export default function NamedField({
   name,
   fieldContent,
   setFieldContent,
@@ -44,11 +44,11 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   text: {
-    width: "90%",
+    width: 350,
     padding: 5,
   },
   textInput: {
-    width: "90%",
+    width: 350,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderWidth: 2,

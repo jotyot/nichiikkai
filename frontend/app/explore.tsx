@@ -1,14 +1,10 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Image, Platform } from 'react-native';
-
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { StyleSheet, Image, Platform } from "react-native";
+import { Collapsible } from "@/components/Collapsible";
+import { ExternalLink } from "@/components/ExternalLink";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
 import ThemedText from "@/components/themed/ThemedText";
 import ThemedView from "@/components/themed/ThemedView";
-import { WideButton } from "@/components/logins/WideButton";
-import { RemoveLoginInfo } from "@/functions/Storage";
-import { router } from "expo-router";
 
 export default function TabTwoScreen() {
   return (
@@ -109,13 +105,6 @@ export default function TabTwoScreen() {
           ),
         })}
       </Collapsible>
-      <WideButton
-        text="Log out"
-        onPress={async () => {
-          await RemoveLoginInfo();
-          router.replace("/login");
-        }}
-      />
     </ParallaxScrollView>
   );
 }

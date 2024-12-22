@@ -12,6 +12,7 @@ import FilterButton from "@/components/dictionary/FilterButton";
 import SearchButton from "@/components/dictionary/WideButton";
 import ThemedText from "@/components/themed/ThemedText";
 import PageButton from "@/components/dictionary/PageButton";
+import LevelSelection from "@/components/dictionary/LevelSelection";
 
 export default function Dictionary() {
   const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
@@ -41,22 +42,10 @@ export default function Dictionary() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedView style={styles.levelContainer}>
-        {["N1", "N2", "N3", "N4", "N5"].map((level, i) => (
-          <CheckBox
-            key={i}
-            label={level}
-            on={selectedLevels.includes(level)}
-            onChange={(value) => {
-              setSelectedLevels((prev) =>
-                value
-                  ? [...prev, level]
-                  : prev.filter((selected) => selected !== level)
-              );
-            }}
-          />
-        ))}
-      </ThemedView>
+      <LevelSelection
+        selectedLevels={selectedLevels}
+        setSelectedLevels={setSelectedLevels}
+      />
       <ThemedView style={styles.filterContainer}>
         <FilterButton
           title={"Level grouping: "}
@@ -125,16 +114,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-  },
-  levelContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-    padding: 5,
-    borderRadius: 10,
-    borderWidth: 1,
-    width: 350,
-    margin: 5,
   },
   filterContainer: {
     flexDirection: "row",

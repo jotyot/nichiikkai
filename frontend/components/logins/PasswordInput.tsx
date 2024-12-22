@@ -26,7 +26,7 @@ export function PasswordInput({
         {...rest}
       />
       <ThemedIonicons
-        name={showPassword ? "eye-off" : "eye"}
+        name={showPassword ? "eye" : "eye-off"}
         size={24}
         onPress={() => setShowPassword(!showPassword)}
         style={styles.icon}
