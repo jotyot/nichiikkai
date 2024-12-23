@@ -7,6 +7,7 @@ import { SetAccessTokenResponse, SetLoginInfo } from "@/functions/Storage";
 import NamedField from "@/components/logins/NamedField";
 import WideButton from "@/components/dictionary/WideButton";
 import { POSTLogin } from "@/functions/APICalls";
+import Title from "@/components/logins/Title";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -41,6 +42,7 @@ export default function Login() {
 
   return (
     <ThemedView style={styles.container}>
+      <Title />
       <ThemedText style={styles.text} type="title">
         Sign in
       </ThemedText>

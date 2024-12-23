@@ -8,6 +8,7 @@ import WideButton from "@/components/dictionary/WideButton";
 import { router } from "expo-router";
 import { POSTRegister, POSTLogin } from "@/functions/APICalls";
 import { SetAccessTokenResponse, SetLoginInfo } from "@/functions/Storage";
+import Title from "@/components/logins/Title";
 
 export default function Register() {
   const [username, setUsername] = useState("");
@@ -59,6 +60,7 @@ export default function Register() {
 
   return (
     <ThemedView style={styles.container}>
+      <Title />
       <ThemedText style={styles.text} type="title">
         Sign up
       </ThemedText>
