@@ -1,6 +1,6 @@
 import ThemedText from "@/components/themed/ThemedText";
 import ThemedView from "@/components/themed/ThemedView";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { router } from "expo-router";
 import { useState, useEffect, useRef } from "react";
@@ -71,7 +71,7 @@ export default function ReviewHomeScreen() {
             : reviewCount + " words to review"}
         </ThemedText>
       </ThemedView>
-      <ThemedView
+      <TouchableOpacity
         style={[
           styles.reviewButton,
           {
@@ -79,12 +79,13 @@ export default function ReviewHomeScreen() {
             backgroundColor: reviewCount === 0 ? "gray" : "salmon",
           },
         ]}
-        onTouchEnd={handleReviewButton}
+        onPress={handleReviewButton}
+        activeOpacity={0.8}
       >
         <ThemedText style={styles.text} type="subtitle">
           Start Reviews
         </ThemedText>
-      </ThemedView>
+      </TouchableOpacity>
       <ReviewForecast reviewCountMap={reviewCountMap} />
     </ThemedView>
   );

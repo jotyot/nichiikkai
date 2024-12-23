@@ -2,8 +2,9 @@ import { router } from "expo-router";
 import ThemedIonicons from "../themed/ThemedIonicons";
 import ThemedText from "../themed/ThemedText";
 import ThemedView from "../themed/ThemedView";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import SummaryEntry from "./SummaryEntry";
+import { useThemeColor } from "@/hooks/useThemeColor";
 
 export type SummaryProps = {
   correctSet: Set<string>;
@@ -18,6 +19,8 @@ export default function Summary({
   mode,
   lock,
 }: SummaryProps) {
+  const borderColor = useThemeColor({}, "text");
+
   return (
     <ThemedView style={styles.container}>
       <ThemedText style={styles.summaryText} type="title">
@@ -39,17 +42,18 @@ export default function Summary({
           <SummaryEntry key={index} correct={false} wordPair={word} />
         ))}
       </ThemedView>
-      <ThemedView
-        style={styles.exitButton}
-        onTouchEnd={
+      <TouchableOpacity
+        style={[styles.exitButton, { borderColor }]}
+        onPress={
           lock
             ? () => {}
             : () =>
                 router.replace(mode === "learn" ? "/(tabs)" : "/(tabs)/review")
         }
+        activeOpacity={0.8}
       >
         <ThemedIonicons name={lock ? "lock-closed" : "close"} size={30} />
-      </ThemedView>
+      </TouchableOpacity>
     </ThemedView>
   );
 }

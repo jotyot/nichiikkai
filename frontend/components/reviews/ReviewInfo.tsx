@@ -1,7 +1,7 @@
 import { WordData } from "@/types/Types";
 import ThemedText from "../themed/ThemedText";
 import ThemedView from "../themed/ThemedView";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import ThemedIonicons from "../themed/ThemedIonicons";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
@@ -23,16 +23,17 @@ export default function ReviewInfo({
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={[styles.info, { height: hidden ? 40 : 200 }]}>
-        <ThemedView
+        <TouchableOpacity
           style={styles.hideButton}
-          onTouchEnd={disabled ? () => {} : () => setHidden(!hidden)}
+          onPress={disabled ? () => {} : () => setHidden(!hidden)}
+          activeOpacity={0.8}
         >
           <ThemedIonicons
             style={styles.icon}
             name={disabled ? "lock-closed" : hidden ? "eye-off" : "eye"}
             size={24}
           />
-        </ThemedView>
+        </TouchableOpacity>
 
         {!hidden && (
           <ThemedView style={styles.textContainer}>

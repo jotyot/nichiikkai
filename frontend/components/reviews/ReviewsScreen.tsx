@@ -9,6 +9,7 @@ import { GETWordData } from "@/functions/APICalls";
 import ReviewInfo from "@/components/reviews/ReviewInfo";
 import { FuzzyMatch } from "@/functions/FuzzyMatch";
 import { isKana } from "wanakana";
+import { TextInput } from "react-native-gesture-handler";
 
 export type ReviewsScreenProps = {
   reviewer: React.MutableRefObject<Reviewer | undefined>;
@@ -36,6 +37,8 @@ export default function ReviewsScreen({
     "correct" | "incorrect" | "default"
   >("default");
 
+  const inputRef = useRef<TextInput>(null);
+
   useEffect(() => {
     (async () => {
       if (!reviewer.current) throw new Error("No reviewer");
@@ -55,6 +58,7 @@ export default function ReviewsScreen({
     setUserInput("");
     setInfoHidden(true);
     setAnswerState("default");
+    inputRef.current?.focus();
     const { wordPair, type } = reviewer.current.GetCurrentReviewEntry();
 
     if (!wordPair) {
@@ -124,6 +128,7 @@ export default function ReviewsScreen({
         onSubmit={handleSubmit}
         type={reviewType}
         state={answerState}
+        ref={inputRef}
       />
       <ReviewInfo
         wordData={currentWordData}

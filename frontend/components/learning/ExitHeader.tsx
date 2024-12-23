@@ -1,6 +1,6 @@
 import ThemedIonicons from "../themed/ThemedIonicons";
 import ThemedView from "../themed/ThemedView";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 export type ExitHeaderProps = {
   handleExit: () => Promise<void> | void;
@@ -9,9 +9,13 @@ export type ExitHeaderProps = {
 export default function ExitHeader({ handleExit }: ExitHeaderProps) {
   return (
     <ThemedView style={styles.header}>
-      <ThemedView style={styles.exitButton} onTouchEnd={handleExit}>
+      <TouchableOpacity
+        style={styles.exitButton}
+        onPress={handleExit}
+        activeOpacity={0.8}
+      >
         <ThemedIonicons name="close" size={25} />
-      </ThemedView>
+      </TouchableOpacity>
     </ThemedView>
   );
 }

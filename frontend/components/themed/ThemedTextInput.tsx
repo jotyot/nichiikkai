@@ -1,6 +1,7 @@
 import { type TextInputProps, StyleSheet, TextInput } from "react-native";
 
 import { useThemeColor } from "@/hooks/useThemeColor";
+import React, { forwardRef, Ref } from "react";
 
 export type ThemedTextProps = TextInputProps & {
   lightColor?: string;
@@ -8,31 +9,39 @@ export type ThemedTextProps = TextInputProps & {
   type?: "default" | "title" | "defaultSemiBold" | "subtitle" | "link";
 };
 
-export default function ThemedTextInput({
-  style,
-  lightColor,
-  darkColor,
-  type = "default",
-  ...rest
-}: ThemedTextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
+const ThemedTextInput = forwardRef(
+  (
+    {
+      style,
+      lightColor,
+      darkColor,
+      type = "default",
+      ...rest
+    }: ThemedTextProps,
+    ref: Ref<TextInput>
+  ) => {
+    const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
 
-  return (
-    <TextInput
-      style={[
-        { color },
-        { borderColor: color },
-        type === "default" ? styles.default : undefined,
-        type === "title" ? styles.title : undefined,
-        type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
-        type === "subtitle" ? styles.subtitle : undefined,
-        type === "link" ? styles.link : undefined,
-        style,
-      ]}
-      {...rest}
-    />
-  );
-}
+    return (
+      <TextInput
+        style={[
+          { color },
+          { borderColor: color },
+          type === "default" ? styles.default : undefined,
+          type === "title" ? styles.title : undefined,
+          type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
+          type === "subtitle" ? styles.subtitle : undefined,
+          type === "link" ? styles.link : undefined,
+          style,
+        ]}
+        ref={ref}
+        {...rest}
+      />
+    );
+  }
+);
+
+export default ThemedTextInput;
 
 const styles = StyleSheet.create({
   default: {

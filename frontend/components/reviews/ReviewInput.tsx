@@ -1,9 +1,10 @@
 import ThemedTextInput from "../themed/ThemedTextInput";
 import ThemedView from "../themed/ThemedView";
 import { StyleSheet } from "react-native";
-import { useRef, useState } from "react";
+import { forwardRef, Ref, useRef, useState } from "react";
 import { toKana } from "wanakana";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { TextInput } from "react-native-gesture-handler";
 
 export type ReviewInputProps = {
   input: string;
@@ -13,45 +14,53 @@ export type ReviewInputProps = {
   state: "correct" | "incorrect" | "default";
 };
 
-export default function ReviewInput({
-  input,
-  setInput,
-  onSubmit,
-  type = "meaning",
-  state = "default",
-}: ReviewInputProps) {
-  const handleTextChange = (text: string) => {
-    if (type === "reading") {
-      const kana = toKana(text, {
-        IMEMode: true,
-        customKanaMapping: { n: "n" },
-      });
-      setInput(kana);
-    } else {
-      setInput(text);
-    }
-  };
+const ReviewInput = forwardRef(
+  (
+    {
+      input,
+      setInput,
+      onSubmit,
+      type = "meaning",
+      state = "default",
+    }: ReviewInputProps,
+    ref: Ref<TextInput>
+  ) => {
+    const handleTextChange = (text: string) => {
+      if (type === "reading") {
+        const kana = toKana(text, {
+          IMEMode: true,
+          customKanaMapping: { n: "n" },
+        });
+        setInput(kana);
+      } else {
+        setInput(text);
+      }
+    };
 
-  return (
-    <ThemedTextInput
-      editable={state === "default" || state === "correct"}
-      value={input}
-      onChangeText={handleTextChange}
-      onSubmitEditing={onSubmit}
-      style={[
-        styles.textInput,
-        {
-          backgroundColor:
-            state === "default"
-              ? useThemeColor({}, "background")
-              : state === "correct"
-              ? "seagreen"
-              : "lightcoral",
-        },
-      ]}
-    />
-  );
-}
+    return (
+      <ThemedTextInput
+        editable={state === "default" || state === "correct"}
+        value={input}
+        onChangeText={handleTextChange}
+        onSubmitEditing={onSubmit}
+        style={[
+          styles.textInput,
+          {
+            backgroundColor:
+              state === "default"
+                ? useThemeColor({}, "background")
+                : state === "correct"
+                ? "seagreen"
+                : "lightcoral",
+          },
+        ]}
+        ref={ref}
+      />
+    );
+  }
+);
+
+export default ReviewInput;
 
 const styles = StyleSheet.create({
   textInput: {
